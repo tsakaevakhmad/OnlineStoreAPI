@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Folder Include="Interfaces\" />
+    <Folder Include="Contexts\" />
     <Folder Include="Repositories\" />
   </ItemGroup>
 
