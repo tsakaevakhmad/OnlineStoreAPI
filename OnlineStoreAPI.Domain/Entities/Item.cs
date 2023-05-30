@@ -12,5 +12,8 @@
 
         public int ItemCategoryId { get; set; }
         public ItemCategory ItemCategory { get; set; }
+
+        public List<ItemCharacteristic> ItemCharacteristic { get; set; }
+        public List<ItemPriceHistory> ItemPriceHistories { get; set; }
     }
 }

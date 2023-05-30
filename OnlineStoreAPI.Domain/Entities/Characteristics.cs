@@ -7,5 +7,7 @@
 
         public int CharacteristicValueId { get; set; }
         public CharacteristicValue CharacteristicValue { get; set; }
+
+        public List<ItemCharacteristic> ItemCharacteristics { get; set; }
     }
 }
