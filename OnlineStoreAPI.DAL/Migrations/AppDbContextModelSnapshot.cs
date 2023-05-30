@@ -232,7 +232,7 @@ namespace OnlineStoreAPI.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.CharacteristicValue", b =>
@@ -249,7 +249,7 @@ namespace OnlineStoreAPI.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CharacteristicValues");
+                    b.ToTable("CharacteristicValues", (string)null);
                 });
 
             modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.Characteristics", b =>
@@ -271,7 +271,7 @@ namespace OnlineStoreAPI.DAL.Migrations
 
                     b.HasIndex("CharacteristicValueId");
 
-                    b.ToTable("Characteristics");
+                    b.ToTable("Characteristics", (string)null);
                 });
 
             modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.Company", b =>
@@ -288,7 +288,7 @@ namespace OnlineStoreAPI.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Companies");
+                    b.ToTable("Companies", (string)null);
                 });
 
             modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.Item", b =>
@@ -321,7 +321,7 @@ namespace OnlineStoreAPI.DAL.Migrations
 
                     b.HasIndex("ItemCategoryId");
 
-                    b.ToTable("Items");
+                    b.ToTable("Items", (string)null);
                 });
 
             modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.ItemCategory", b =>
@@ -343,7 +343,7 @@ namespace OnlineStoreAPI.DAL.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("ItemCategories");
+                    b.ToTable("ItemCategories", (string)null);
                 });
 
             modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.ItemCharacteristic", b =>
@@ -366,7 +366,7 @@ namespace OnlineStoreAPI.DAL.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("ItemCharacteristics");
+                    b.ToTable("ItemCharacteristics", (string)null);
                 });
 
             modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.ItemPriceHistory", b =>
@@ -390,7 +390,7 @@ namespace OnlineStoreAPI.DAL.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("ItemPriceHistories");
+                    b.ToTable("ItemPriceHistories", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
