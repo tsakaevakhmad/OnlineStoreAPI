@@ -21,7 +21,8 @@ namespace OnlineStoreAPI.DAL.Repositories
         {
             try
             {
-                await _db.Items.AddAsync(data);
+                
+                var result = await _db.Items.AddAsync(data);
 
                 await UpdatePriceHistoryAsync(data);
 
@@ -36,7 +37,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             }
         }
 
-        public async Task<ItemProperty> CreateProperty(ItemProperty data)
+        public async Task<ItemProperty> CreatePropertyAsync(ItemProperty data)
         {
             try
             {
@@ -70,7 +71,14 @@ namespace OnlineStoreAPI.DAL.Repositories
         {
             try
             {
-                return await _db.Items.FindAsync(id);
+                return await _db.Items
+                    .Include(x => x.ItemPriceHistories)
+                    .Include(x => x.ItemCategory)
+                    .Include(x => x.Company)
+                    .Include(x => x.ItemProperyValue)
+                    .ThenInclude(x => x.ItemProperty)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Id == id);
             }
             catch (Exception ex)
             {

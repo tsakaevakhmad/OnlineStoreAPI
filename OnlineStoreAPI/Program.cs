@@ -1,15 +1,27 @@
 using Microsoft.EntityFrameworkCore;
 using OnlineStoreAPI.DAL.Contexts;
+using OnlineStoreAPI.DAL.Interfaces;
+using OnlineStoreAPI.DAL.Repositories;
+using OnlineStoreAPI.Domain.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Repository
+builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
+builder.Services.AddScoped<IRepository<ItemCategory>, ItemCategoryRepository>();
+builder.Services.AddScoped<IRepository<Company>, CompanyRepository>();
+builder.Services.AddScoped<IItemRepositories, ItemRepository>();
 
 var connection = builder.Configuration.GetSection("DB").Value;
 builder.Services.AddDbContext<AppDbContext>(option => option.UseNpgsql(connection));
 
+builder.Services.AddControllersWithViews()
+    .AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
+
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

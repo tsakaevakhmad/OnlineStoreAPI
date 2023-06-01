@@ -7,6 +7,6 @@
         public DateTime DateTime { get; set; } = DateTime.UtcNow;
         
         public int ItemId { get; set; }
-        public Item Item { get; set; }
+        public Item? Item { get; set; }
     }
 }

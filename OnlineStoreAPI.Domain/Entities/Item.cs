@@ -11,7 +11,7 @@
         public Company? Company { get; set; }
 
         public int ItemCategoryId { get; set; }
-        public ItemCategory ItemCategory { get; set; }
+        public ItemCategory? ItemCategory { get; set; }
 
         public List<ItemProperyValue> ItemProperyValue { get; set; }
         public List<ItemPriceHistory> ItemPriceHistories { get; set; }

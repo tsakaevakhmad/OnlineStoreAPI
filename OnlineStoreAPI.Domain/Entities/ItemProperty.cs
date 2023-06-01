@@ -6,6 +6,6 @@
 
         public string Name { get; set; }
 
-        public List<ItemProperyValue> ItemProperyValue { get; set; }
+        public List<ItemProperyValue>? ItemProperyValue { get; set; }
     }
 }
