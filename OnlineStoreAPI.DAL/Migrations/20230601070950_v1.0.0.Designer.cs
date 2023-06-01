@@ -12,8 +12,8 @@ using OnlineStoreAPI.DAL.Contexts;
 namespace OnlineStoreAPI.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230601052728_v1.0.1")]
-    partial class v101
+    [Migration("20230601070950_v1.0.0")]
+    partial class v100
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

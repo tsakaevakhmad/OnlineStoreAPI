@@ -1,4 +1,5 @@
-﻿using OnlineStoreAPI.DAL.Contexts;
+﻿using Microsoft.EntityFrameworkCore;
+using OnlineStoreAPI.DAL.Contexts;
 using OnlineStoreAPI.DAL.Interfaces;
 using OnlineStoreAPI.Domain.Entities;
 
@@ -18,7 +19,9 @@ namespace OnlineStoreAPI.DAL.Repositories
             try
             {
                 await _db.Items.AddAsync(data);
-                await _db.ItemPriceHistories.AddAsync(new ItemPriceHistory { Item = data, Price = (decimal)data.Price });
+
+                await UpdatePriceHistory(data);
+
                 await _db.ItemProperyValues.AddRangeAsync(data.ItemProperyValue);
                 await _db.SaveChangesAsync();
                 return data;
@@ -43,24 +46,76 @@ namespace OnlineStoreAPI.DAL.Repositories
             }
         }
 
-        public Task<Item> DeleteAsync(int id)
+        public async Task<Item> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var result = _db.Items.Remove(await _db.Items.FindAsync(id));
+                await _db.SaveChangesAsync();
+                return result.Entity;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
-        public Task<Item> GetAsync(int id)
+        public async Task<Item> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _db.Items.FindAsync(id);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
-        public Task<IEnumerable<Item>> GetAsync()
+        public async Task<IEnumerable<Item>> GetAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _db.Items.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
-        public Task<Item> UpdateAsync(Item data)
+        public async Task<Item> UpdateAsync(Item data)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var item = _db.Entry<Item>(data);
+                item.State = EntityState.Modified;
+
+                foreach(var itemProperyValues in data.ItemProperyValue)
+                {
+                    var values = _db.Entry<ItemProperyValue>(itemProperyValues);
+                    values.State = EntityState.Modified;
+                }
+
+                await _db.SaveChangesAsync();
+                return item.Entity;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private async Task UpdatePriceHistory(Item data)
+        {
+            try
+            {
+                await _db.ItemPriceHistories.AddAsync(new ItemPriceHistory { Item = data, Price = (decimal)data.Price });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

@@ -78,6 +78,19 @@ namespace OnlineStoreAPI.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ItemPropertis",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ItemPropertis", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -233,27 +246,6 @@ namespace OnlineStoreAPI.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ItemCharacteristics",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AttributeName = table.Column<string>(type: "text", nullable: false),
-                    AttributeValue = table.Column<string>(type: "text", nullable: false),
-                    ItemId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ItemCharacteristics", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ItemCharacteristics_Items_ItemId",
-                        column: x => x.ItemId,
-                        principalTable: "Items",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ItemPriceHistories",
                 columns: table => new
                 {
@@ -268,6 +260,33 @@ namespace OnlineStoreAPI.DAL.Migrations
                     table.PrimaryKey("PK_ItemPriceHistories", x => x.Id);
                     table.ForeignKey(
                         name: "FK_ItemPriceHistories_Items_ItemId",
+                        column: x => x.ItemId,
+                        principalTable: "Items",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ItemProperyValues",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Value = table.Column<string>(type: "text", nullable: false),
+                    ItemId = table.Column<int>(type: "integer", nullable: false),
+                    ItemPropertyId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ItemProperyValues", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ItemProperyValues_ItemPropertis_ItemPropertyId",
+                        column: x => x.ItemPropertyId,
+                        principalTable: "ItemPropertis",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ItemProperyValues_Items_ItemId",
                         column: x => x.ItemId,
                         principalTable: "Items",
                         principalColumn: "Id",
@@ -317,14 +336,19 @@ namespace OnlineStoreAPI.DAL.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ItemCharacteristics_ItemId",
-                table: "ItemCharacteristics",
-                column: "ItemId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ItemPriceHistories_ItemId",
                 table: "ItemPriceHistories",
                 column: "ItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ItemProperyValues_ItemId",
+                table: "ItemProperyValues",
+                column: "ItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ItemProperyValues_ItemPropertyId",
+                table: "ItemProperyValues",
+                column: "ItemPropertyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Items_CompanyId",
@@ -356,16 +380,19 @@ namespace OnlineStoreAPI.DAL.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "ItemCharacteristics");
+                name: "ItemPriceHistories");
 
             migrationBuilder.DropTable(
-                name: "ItemPriceHistories");
+                name: "ItemProperyValues");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "ItemPropertis");
 
             migrationBuilder.DropTable(
                 name: "Items");
