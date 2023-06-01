@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using OnlineStoreAPI.DAL.Contexts;
 using OnlineStoreAPI.DAL.Interfaces;
 using OnlineStoreAPI.Domain.Entities;
@@ -8,10 +9,12 @@ namespace OnlineStoreAPI.DAL.Repositories
     public class ItemRepository : IItemRepositories
     {
         private readonly AppDbContext _db;
+        private readonly ILogger<ItemRepository> _logger;
 
-        public ItemRepository(AppDbContext db) 
+        public ItemRepository(AppDbContext db, ILogger<ItemRepository> logger) 
         { 
             _db = db; 
+            _logger = logger;
         }
 
         public async Task<Item> CreateAsync(Item data)
@@ -20,7 +23,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             {
                 await _db.Items.AddAsync(data);
 
-                await UpdatePriceHistory(data);
+                await UpdatePriceHistoryAsync(data);
 
                 await _db.ItemProperyValues.AddRangeAsync(data.ItemProperyValue);
                 await _db.SaveChangesAsync();
@@ -28,6 +31,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             }
             catch(Exception ex)
             {
+                _logger.LogCritical(ex, $"Error when create item {data.Title}");
                 throw ex;
             }
         }
@@ -42,6 +46,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogCritical(ex, $"Error when create item property {data.Name}");
                 throw ex;
             }
         }
@@ -56,6 +61,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             }
             catch(Exception ex)
             {
+                _logger.LogCritical(ex, $"Error when delete item {id}");
                 throw ex;
             }
         }
@@ -68,6 +74,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogCritical(ex, $"Error when get item by id {id}");
                 throw ex;
             }
         }
@@ -80,6 +87,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             }
             catch (Exception ex)
             {
+                _logger.LogCritical(ex, $"Error when get all items ");
                 throw ex;
             }
         }
@@ -97,16 +105,19 @@ namespace OnlineStoreAPI.DAL.Repositories
                     values.State = EntityState.Modified;
                 }
 
+                await UpdatePriceHistoryAsync(data);
+
                 await _db.SaveChangesAsync();
                 return item.Entity;
             }
             catch (Exception ex)
             {
+                _logger.LogCritical(ex, $"Error when update item {data.Title}");
                 throw ex;
             }
         }
 
-        private async Task UpdatePriceHistory(Item data)
+        private async Task UpdatePriceHistoryAsync(Item data)
         {
             try
             {

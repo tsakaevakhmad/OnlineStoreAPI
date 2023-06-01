@@ -1,4 +1,6 @@
-﻿using OnlineStoreAPI.DAL.Contexts;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using OnlineStoreAPI.DAL.Contexts;
 using OnlineStoreAPI.DAL.Interfaces;
 using OnlineStoreAPI.Domain.Entities;
 
@@ -7,35 +9,84 @@ namespace OnlineStoreAPI.DAL.Repositories
     public class CompanyRepository : IRepository<Company>
     {
         private readonly AppDbContext _db;
+        private readonly ILogger<CompanyRepository> _logger;
 
-        public CompanyRepository(AppDbContext db)
+        public CompanyRepository(AppDbContext db, ILogger<CompanyRepository> logger)
         {
             _db = db;
+            _logger = logger;
         }
 
-        public Task<Company> CreateAsync(Company data)
+        public async Task<Company> CreateAsync(Company data)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var result = await _db.Companies.AddAsync(data);
+                await _db.SaveChangesAsync();
+                return result.Entity;
+            }
+            catch(Exception ex)
+            {
+                _logger.LogCritical(ex, $"Error when try create company {data.Name}");
+                throw ex;
+            }
         }
 
-        public Task<Company> DeleteAsync(int id)
+        public async Task<Company> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var result = _db.Companies.Remove(await _db.Companies.FindAsync(id));
+                await _db.SaveChangesAsync();
+                return result.Entity;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, $"Error when deletin company {id}");
+                throw ex;
+            }
         }
 
-        public Task<Company> GetAsync(int id)
+        public async Task<Company> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _db.Companies.FindAsync(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, $"Error when get company by id: {id}");
+                throw ex;
+            }
         }
 
-        public Task<IEnumerable<Company>> GetAsync()
+        public async Task<IEnumerable<Company>> GetAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _db.Companies.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, $"Error when get all companies");
+                throw ex;
+            }
         }
 
-        public Task<Company> UpdateAsync(Company data)
+        public async Task<Company> UpdateAsync(Company data)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var entity = _db.Entry<Company>(data);
+                entity.State = EntityState.Modified;
+                await _db.SaveChangesAsync();
+                return entity.Entity;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, $"Error when update company {data.Id}");
+                throw ex;
+            }
         }
     }
 }
