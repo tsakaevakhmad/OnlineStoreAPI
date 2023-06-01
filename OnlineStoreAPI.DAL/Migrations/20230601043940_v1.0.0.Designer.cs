@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OnlineStoreAPI.DAL.Contexts;
@@ -11,9 +12,11 @@ using OnlineStoreAPI.DAL.Contexts;
 namespace OnlineStoreAPI.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230601043940_v1.0.0")]
+    partial class v100
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -307,6 +310,32 @@ namespace OnlineStoreAPI.DAL.Migrations
                     b.ToTable("ItemCategories");
                 });
 
+            modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.ItemCharacteristic", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AttributeName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("AttributeValue")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItemId");
+
+                    b.ToTable("ItemCharacteristics");
+                });
+
             modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.ItemPriceHistory", b =>
                 {
                     b.Property<int>("Id")
@@ -329,50 +358,6 @@ namespace OnlineStoreAPI.DAL.Migrations
                     b.HasIndex("ItemId");
 
                     b.ToTable("ItemPriceHistories");
-                });
-
-            modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.ItemProperty", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ItemPropertis");
-                });
-
-            modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.ItemProperyValue", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ItemId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ItemPropertyId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ItemId");
-
-                    b.HasIndex("ItemPropertyId");
-
-                    b.ToTable("ItemProperyValues");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -456,6 +441,17 @@ namespace OnlineStoreAPI.DAL.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.ItemCharacteristic", b =>
+                {
+                    b.HasOne("OnlineStoreAPI.Domain.Entities.Item", "Item")
+                        .WithMany("ItemCharacteristic")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Item");
+                });
+
             modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.ItemPriceHistory", b =>
                 {
                     b.HasOne("OnlineStoreAPI.Domain.Entities.Item", "Item")
@@ -465,25 +461,6 @@ namespace OnlineStoreAPI.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("Item");
-                });
-
-            modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.ItemProperyValue", b =>
-                {
-                    b.HasOne("OnlineStoreAPI.Domain.Entities.Item", "Item")
-                        .WithMany("ItemProperyValue")
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OnlineStoreAPI.Domain.Entities.ItemProperty", "ItemProperty")
-                        .WithMany("ItemProperyValue")
-                        .HasForeignKey("ItemPropertyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Item");
-
-                    b.Navigation("ItemProperty");
                 });
 
             modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.Category", b =>
@@ -498,19 +475,14 @@ namespace OnlineStoreAPI.DAL.Migrations
 
             modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.Item", b =>
                 {
-                    b.Navigation("ItemPriceHistories");
+                    b.Navigation("ItemCharacteristic");
 
-                    b.Navigation("ItemProperyValue");
+                    b.Navigation("ItemPriceHistories");
                 });
 
             modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.ItemCategory", b =>
                 {
                     b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.ItemProperty", b =>
-                {
-                    b.Navigation("ItemProperyValue");
                 });
 #pragma warning restore 612, 618
         }

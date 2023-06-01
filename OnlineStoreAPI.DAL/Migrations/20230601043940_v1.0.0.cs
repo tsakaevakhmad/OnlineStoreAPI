@@ -65,19 +65,6 @@ namespace OnlineStoreAPI.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CharacteristicValues",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Value = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CharacteristicValues", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Companies",
                 columns: table => new
                 {
@@ -217,26 +204,6 @@ namespace OnlineStoreAPI.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Characteristics",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    CharacteristicValueId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Characteristics", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Characteristics_CharacteristicValues_CharacteristicValueId",
-                        column: x => x.CharacteristicValueId,
-                        principalTable: "CharacteristicValues",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Items",
                 columns: table => new
                 {
@@ -271,18 +238,13 @@ namespace OnlineStoreAPI.DAL.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ItemId = table.Column<int>(type: "integer", nullable: false),
-                    CharacteristicsId = table.Column<int>(type: "integer", nullable: false)
+                    AttributeName = table.Column<string>(type: "text", nullable: false),
+                    AttributeValue = table.Column<string>(type: "text", nullable: false),
+                    ItemId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ItemCharacteristics", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ItemCharacteristics_Characteristics_CharacteristicsId",
-                        column: x => x.CharacteristicsId,
-                        principalTable: "Characteristics",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ItemCharacteristics_Items_ItemId",
                         column: x => x.ItemId,
@@ -350,19 +312,9 @@ namespace OnlineStoreAPI.DAL.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Characteristics_CharacteristicValueId",
-                table: "Characteristics",
-                column: "CharacteristicValueId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ItemCategories_CategoryId",
                 table: "ItemCategories",
                 column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ItemCharacteristics_CharacteristicsId",
-                table: "ItemCharacteristics",
-                column: "CharacteristicsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ItemCharacteristics_ItemId",
@@ -416,13 +368,7 @@ namespace OnlineStoreAPI.DAL.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Characteristics");
-
-            migrationBuilder.DropTable(
                 name: "Items");
-
-            migrationBuilder.DropTable(
-                name: "CharacteristicValues");
 
             migrationBuilder.DropTable(
                 name: "Companies");

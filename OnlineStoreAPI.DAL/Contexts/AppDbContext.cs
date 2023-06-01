@@ -14,10 +14,9 @@ namespace OnlineStoreAPI.DAL.Contexts
         public DbSet<Item> Items { get; set; }
         public DbSet<ItemCategory> ItemCategories { get; set; }
         public DbSet<ItemPriceHistory> ItemPriceHistories { get; set; }
-        public DbSet<ItemCharacteristic> ItemCharacteristics { get; set; }
+        public DbSet<ItemProperty> ItemPropertis { get; set; }
+        public DbSet<ItemProperyValue> ItemProperyValues { get; set; }
         public DbSet<Company> Companies { get; set; }
-        public DbSet<CharacteristicValue> CharacteristicValues { get; set; }
-        public DbSet<Characteristics> Characteristics { get; set; }
         public DbSet<Category> Categories { get; set; }
     }
 }
