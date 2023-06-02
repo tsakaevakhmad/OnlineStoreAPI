@@ -21,11 +21,8 @@ namespace OnlineStoreAPI.DAL.Repositories
         {
             try
             {
-                
                 var result = await _db.Items.AddAsync(data);
-
                 await UpdatePriceHistoryAsync(data);
-
                 await _db.ItemProperyValues.AddRangeAsync(data.ItemProperyValue);
                 await _db.SaveChangesAsync();
                 return data;
@@ -48,6 +45,21 @@ namespace OnlineStoreAPI.DAL.Repositories
             catch (Exception ex)
             {
                 _logger.LogCritical(ex, $"Error when create item property {data.Name}");
+                throw ex;
+            }
+        }
+
+        public async Task<ItemPriceHistory> GetPriceHistoryAsync(int itemId)
+        {
+            try
+            { 
+                return await _db.ItemPriceHistories
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.ItemId == itemId); ;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, $"Error when get item price history {itemId}");
                 throw ex;
             }
         }

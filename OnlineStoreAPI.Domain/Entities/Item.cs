@@ -14,6 +14,6 @@
         public ItemCategory? ItemCategory { get; set; }
 
         public List<ItemProperyValue> ItemProperyValue { get; set; }
-        public List<ItemPriceHistory> ItemPriceHistories { get; set; }
+        public List<ItemPriceHistory>? ItemPriceHistories { get; set; }
     }
 }
