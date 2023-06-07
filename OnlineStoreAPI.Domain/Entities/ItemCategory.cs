@@ -9,5 +9,7 @@
         public Category? Category { get; set; }
 
         public List<Item>? Items { get; set; }
+
+        public List<ItemProperty> ItemProperty { get; set; }
     }
 }
