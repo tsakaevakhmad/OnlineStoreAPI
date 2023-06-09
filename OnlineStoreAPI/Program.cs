@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using OnlineStoreAPI.BLL.AutoMapper;
 using OnlineStoreAPI.DAL.Contexts;
 using OnlineStoreAPI.DAL.Interfaces;
 using OnlineStoreAPI.DAL.Repositories;
@@ -6,11 +7,16 @@ using OnlineStoreAPI.Domain.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Services
+
 // Repository
 builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
 builder.Services.AddScoped<IRepository<ItemCategory>, ItemCategoryRepository>();
 builder.Services.AddScoped<IRepository<Company>, CompanyRepository>();
 builder.Services.AddScoped<IItemRepositories, ItemRepository>();
+
+//AutoMapperProfiles
+builder.Services.AddAutoMapper(typeof(CategoryProfile));
 
 var connection = builder.Configuration.GetSection("DB").Value;
 builder.Services.AddDbContext<AppDbContext>(option => option.UseNpgsql(connection));
