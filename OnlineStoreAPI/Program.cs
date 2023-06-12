@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using OnlineStoreAPI.BLL.AutoMapper;
+using OnlineStoreAPI.BLL.Interfaces;
+using OnlineStoreAPI.BLL.Services;
 using OnlineStoreAPI.DAL.Contexts;
 using OnlineStoreAPI.DAL.Interfaces;
 using OnlineStoreAPI.DAL.Repositories;
@@ -8,6 +10,7 @@ using OnlineStoreAPI.Domain.Entities;
 var builder = WebApplication.CreateBuilder(args);
 
 // Services
+builder.Services.AddTransient<ICategoryServices, CategoryServices>();
 
 // Repository
 builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();

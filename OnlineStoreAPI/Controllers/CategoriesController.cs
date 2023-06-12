@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OnlineStoreAPI.BLL.Interfaces;
 using OnlineStoreAPI.DAL.Interfaces;
+using OnlineStoreAPI.Domain.DataTransferObjects;
+using OnlineStoreAPI.Domain.DataTransferObjects.Category;
 using OnlineStoreAPI.Domain.Entities;
 
 namespace OnlineStoreAPI.Controllers
@@ -8,46 +11,91 @@ namespace OnlineStoreAPI.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private readonly IRepository<Category> _repository;
+        private readonly ICategoryServices _categoryServices;
 
-        public CategoriesController(IRepository<Category> repository)
+        public CategoriesController(ICategoryServices categoryServices)
         {
-            _repository = repository;
+            _categoryServices = categoryServices;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Category>>> GetCategory()
+        public async Task<ActionResult<IEnumerable<CategoryListDTO>>> GetCategory()
         {
-            return Ok(await _repository.GetAsync());
+            ResponseDTO<IEnumerable<CategoryListDTO>> result = new ResponseDTO<IEnumerable<CategoryListDTO>>(null);
+            try
+            {
+                result = await _categoryServices.GetAsync();
+                return Ok(result);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(result);
+            }
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Category>> GetCategory(int id)
+        public async Task<ActionResult<CategoryListDTO>> GetCategory(int id)
         {
-            return await _repository.GetAsync(id);
+            ResponseDTO<CategoryListDTO> result = new ResponseDTO<CategoryListDTO>(null);
+            try
+            {
+                result = await _categoryServices.GetAsync(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(result);
+            }
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<Category>> PutCategory(int id, Category category)
+        public async Task<ActionResult<CategoryListDTO>> PutCategory(int id, CategoryListDTO category)
         {
             if (id != category.Id)
             {
-                return BadRequest();
+                return BadRequest("Incorrect id");
             }
-            
-            return await _repository.UpdateAsync(category);
+
+            ResponseDTO<CategoryListDTO> result = new ResponseDTO<CategoryListDTO>(null);
+            try
+            {
+                result = await _categoryServices.UpdateAsync(category);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(result);
+            }
         }
 
         [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory(Category category)
+        public async Task<ActionResult<CategoryListDTO>> PostCategory(CategoryListDTO category)
         {
-            return await _repository.CreateAsync(category);
+            ResponseDTO<CategoryListDTO> result = new ResponseDTO<CategoryListDTO>(null);
+            try
+            {
+                result = await _categoryServices.CreateAsync(category);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(result);
+            }
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Category>> DeleteCategory(int id)
+        public async Task<ActionResult<CategoryListDTO>> DeleteCategory(int id)
         {
-            return await _repository.DeleteAsync(id);
+            ResponseDTO<CategoryListDTO> result = new ResponseDTO<CategoryListDTO>(null);
+            try
+            {
+                result = await _categoryServices.DeleteAsync(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(result);
+            }
         }
     }
 }

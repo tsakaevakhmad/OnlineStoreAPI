@@ -39,6 +39,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             {
                 var data = await _db.Categories.FindAsync(id);
                 _db.Categories.Remove(data);
+                await _db.SaveChangesAsync();
                 return data;
             }
             catch(Exception ex)
