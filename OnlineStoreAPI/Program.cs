@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Services
 builder.Services.AddTransient<ICategoryServices, CategoryServices>();
+builder.Services.AddTransient<ICompanyServices, CompanyServices>();
 
 // Repository
 builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();

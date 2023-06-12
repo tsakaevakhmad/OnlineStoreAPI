@@ -8,7 +8,7 @@ namespace OnlineStoreAPI.BLL.AutoMapper
     {
         public CategoryProfile() 
         {
-            CreateMap<Category, CategoryListDTO>().ReverseMap();
+            CreateMap<Category, CategoryShortDTO>().ReverseMap();
         }
     }
 }

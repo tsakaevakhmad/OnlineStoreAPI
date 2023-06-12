@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineStoreAPI.BLL.Interfaces;
-using OnlineStoreAPI.DAL.Interfaces;
 using OnlineStoreAPI.Domain.DataTransferObjects;
 using OnlineStoreAPI.Domain.DataTransferObjects.Category;
-using OnlineStoreAPI.Domain.Entities;
 
 namespace OnlineStoreAPI.Controllers
 {
@@ -19,9 +17,9 @@ namespace OnlineStoreAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CategoryListDTO>>> GetCategory()
+        public async Task<ActionResult<IEnumerable<CategoryShortDTO>>> GetCategory()
         {
-            ResponseDTO<IEnumerable<CategoryListDTO>> result = new ResponseDTO<IEnumerable<CategoryListDTO>>(null);
+            ResponseDTO<IEnumerable<CategoryShortDTO>> result = new ResponseDTO<IEnumerable<CategoryShortDTO>>(null);
             try
             {
                 result = await _categoryServices.GetAsync();
@@ -34,9 +32,9 @@ namespace OnlineStoreAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<CategoryListDTO>> GetCategory(int id)
+        public async Task<ActionResult<CategoryShortDTO>> GetCategory(int id)
         {
-            ResponseDTO<CategoryListDTO> result = new ResponseDTO<CategoryListDTO>(null);
+            ResponseDTO<CategoryShortDTO> result = new ResponseDTO<CategoryShortDTO>(null);
             try
             {
                 result = await _categoryServices.GetAsync(id);
@@ -49,14 +47,14 @@ namespace OnlineStoreAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<CategoryListDTO>> PutCategory(int id, CategoryListDTO category)
+        public async Task<ActionResult<CategoryShortDTO>> PutCategory(int id, CategoryShortDTO category)
         {
             if (id != category.Id)
             {
                 return BadRequest("Incorrect id");
             }
 
-            ResponseDTO<CategoryListDTO> result = new ResponseDTO<CategoryListDTO>(null);
+            ResponseDTO<CategoryShortDTO> result = new ResponseDTO<CategoryShortDTO>(null);
             try
             {
                 result = await _categoryServices.UpdateAsync(category);
@@ -69,9 +67,9 @@ namespace OnlineStoreAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<CategoryListDTO>> PostCategory(CategoryListDTO category)
+        public async Task<ActionResult<CategoryShortDTO>> PostCategory(CategoryShortDTO category)
         {
-            ResponseDTO<CategoryListDTO> result = new ResponseDTO<CategoryListDTO>(null);
+            ResponseDTO<CategoryShortDTO> result = new ResponseDTO<CategoryShortDTO>(null);
             try
             {
                 result = await _categoryServices.CreateAsync(category);
@@ -84,9 +82,9 @@ namespace OnlineStoreAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<CategoryListDTO>> DeleteCategory(int id)
+        public async Task<ActionResult<CategoryShortDTO>> DeleteCategory(int id)
         {
-            ResponseDTO<CategoryListDTO> result = new ResponseDTO<CategoryListDTO>(null);
+            ResponseDTO<CategoryShortDTO> result = new ResponseDTO<CategoryShortDTO>(null);
             try
             {
                 result = await _categoryServices.DeleteAsync(id);

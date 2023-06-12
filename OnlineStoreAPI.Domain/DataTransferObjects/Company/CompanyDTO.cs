@@ -6,6 +6,6 @@ namespace OnlineStoreAPI.Domain.DataTransferObjects.Company
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public List<ItemListDTO>? Items { get; set; }
+        public List<ItemShortDTO>? Items { get; set; }
     }
 }

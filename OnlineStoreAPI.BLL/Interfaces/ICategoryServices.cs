@@ -5,10 +5,10 @@ namespace OnlineStoreAPI.BLL.Interfaces
 {
     public interface ICategoryServices
     {
-        public Task<ResponseDTO<CategoryListDTO>> GetAsync(int id);
-        public Task<ResponseDTO<IEnumerable<CategoryListDTO>>> GetAsync();
-        public Task<ResponseDTO<CategoryListDTO>> UpdateAsync(CategoryListDTO data);
-        public Task<ResponseDTO<CategoryListDTO>> DeleteAsync(int id);
-        public Task<ResponseDTO<CategoryListDTO>> CreateAsync(CategoryListDTO data);
+        public Task<ResponseDTO<CategoryShortDTO>> GetAsync(int id);
+        public Task<ResponseDTO<IEnumerable<CategoryShortDTO>>> GetAsync();
+        public Task<ResponseDTO<CategoryShortDTO>> UpdateAsync(CategoryShortDTO data);
+        public Task<ResponseDTO<CategoryShortDTO>> DeleteAsync(int id);
+        public Task<ResponseDTO<CategoryShortDTO>> CreateAsync(CategoryShortDTO data);
     }
 }

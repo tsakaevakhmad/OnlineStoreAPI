@@ -1,6 +1,6 @@
 ﻿namespace OnlineStoreAPI.Domain.DataTransferObjects.Item
 {
-    public class ItemListDTO
+    public class ItemShortDTO
     {
         public int Id { get; set; }
         public string Title { get; set; }

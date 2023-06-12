@@ -9,7 +9,7 @@ namespace OnlineStoreAPI.BLL.AutoMapper
         public CompanyProfile() 
         {
             CreateMap<Company, CompanyDTO>().ReverseMap();
-            CreateMap<Company, CompanyListDTO>().ReverseMap();
+            CreateMap<Company, CompanyShortDTO>().ReverseMap();
         }
     }
 }

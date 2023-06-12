@@ -18,73 +18,73 @@ namespace OnlineStoreAPI.BLL.Services
             _repository = repository;
         }
 
-        public async Task<ResponseDTO<CategoryListDTO>> CreateAsync(CategoryListDTO data)
+        public async Task<ResponseDTO<CategoryShortDTO>> CreateAsync(CategoryShortDTO data)
         {
-            CategoryListDTO result = new CategoryListDTO();
+            CategoryShortDTO result = new CategoryShortDTO();
             try
             {
-                result = _mapper.Map<CategoryListDTO>(await _repository.CreateAsync(_mapper.Map<Category>(data)));
-                return new ResponseDTO<CategoryListDTO>(result);
+                result = _mapper.Map<CategoryShortDTO>(await _repository.CreateAsync(_mapper.Map<Category>(data)));
+                return new ResponseDTO<CategoryShortDTO>(result);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<CategoryListDTO>(result) { Message = ex.Message };
+                return new ResponseDTO<CategoryShortDTO>(result) { Message = ex.Message };
             }
         }
 
-        public async Task<ResponseDTO<CategoryListDTO>> DeleteAsync(int id)
+        public async Task<ResponseDTO<CategoryShortDTO>> DeleteAsync(int id)
         {
-            CategoryListDTO result = new CategoryListDTO();
+            CategoryShortDTO result = new CategoryShortDTO();
             try
             {
-                result = _mapper.Map<CategoryListDTO>(await _repository.DeleteAsync(id));
-                return new ResponseDTO<CategoryListDTO>(result);
+                result = _mapper.Map<CategoryShortDTO>(await _repository.DeleteAsync(id));
+                return new ResponseDTO<CategoryShortDTO>(result);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<CategoryListDTO>(result) { Message = ex.Message };
+                return new ResponseDTO<CategoryShortDTO>(result) { Message = ex.Message };
             }
         }
 
-        public async Task<ResponseDTO<CategoryListDTO>> GetAsync(int id)
+        public async Task<ResponseDTO<CategoryShortDTO>> GetAsync(int id)
         {
-            CategoryListDTO result = new CategoryListDTO();
+            CategoryShortDTO result = new CategoryShortDTO();
             try
             {
-                result = _mapper.Map<CategoryListDTO>(await _repository.GetAsync(id));
-                return new ResponseDTO<CategoryListDTO>(result);
+                result = _mapper.Map<CategoryShortDTO>(await _repository.GetAsync(id));
+                return new ResponseDTO<CategoryShortDTO>(result);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<CategoryListDTO>(result) { Message = ex.Message };
+                return new ResponseDTO<CategoryShortDTO>(result) { Message = ex.Message };
             }
         }
 
-        public async Task<ResponseDTO<IEnumerable<CategoryListDTO>>> GetAsync()
+        public async Task<ResponseDTO<IEnumerable<CategoryShortDTO>>> GetAsync()
         {
-            IEnumerable<CategoryListDTO> result = new List<CategoryListDTO>();
+            IEnumerable<CategoryShortDTO> result = new List<CategoryShortDTO>();
             try
             {
-                result = _mapper.Map<IEnumerable<CategoryListDTO>>(await _repository.GetAsync());
-                return new ResponseDTO<IEnumerable<CategoryListDTO>>(result);
+                result = _mapper.Map<IEnumerable<CategoryShortDTO>>(await _repository.GetAsync());
+                return new ResponseDTO<IEnumerable<CategoryShortDTO>>(result);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<IEnumerable<CategoryListDTO>>(result) { Message = ex.Message };
+                return new ResponseDTO<IEnumerable<CategoryShortDTO>>(result) { Message = ex.Message };
             }
         }
 
-        public async Task<ResponseDTO<CategoryListDTO>> UpdateAsync(CategoryListDTO data)
+        public async Task<ResponseDTO<CategoryShortDTO>> UpdateAsync(CategoryShortDTO data)
         {
-            CategoryListDTO result = new CategoryListDTO();
+            CategoryShortDTO result = new CategoryShortDTO();
             try
             {
-                result = _mapper.Map<CategoryListDTO>(await _repository.UpdateAsync(_mapper.Map<Category>(data)));
-                return new ResponseDTO<CategoryListDTO>(result);
+                result = _mapper.Map<CategoryShortDTO>(await _repository.UpdateAsync(_mapper.Map<Category>(data)));
+                return new ResponseDTO<CategoryShortDTO>(result);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<CategoryListDTO>(result) { Message = ex.Message };
+                return new ResponseDTO<CategoryShortDTO>(result) { Message = ex.Message };
             }
         }
     }
