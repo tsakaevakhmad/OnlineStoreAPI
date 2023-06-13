@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using NuGet.Protocol.Core.Types;
-using OnlineStoreAPI.DAL.Interfaces;
-using OnlineStoreAPI.Domain.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
+using OnlineStoreAPI.BLL.Interfaces;
+using OnlineStoreAPI.Domain.DataTransferObjects.Company;
+using OnlineStoreAPI.Domain.DataTransferObjects;
+using OnlineStoreAPI.Domain.DataTransferObjects.ItemCategory;
 
 namespace OnlineStoreAPI.Controllers
 {
@@ -10,18 +10,89 @@ namespace OnlineStoreAPI.Controllers
     [ApiController]
     public class ItemCategoryController : ControllerBase
     {
-        private readonly IRepository<ItemCategory> _repository;
+        private readonly IItemCategoryServices _itemCategoryServices;
 
-        public ItemCategoryController(IRepository<ItemCategory> repository) 
+        public ItemCategoryController(IItemCategoryServices itemCategoryServices) 
         {
-            _repository = repository;
+            _itemCategoryServices = itemCategoryServices;
         }
 
         [HttpPost]
-
-        public async Task<ItemCategory> Create(ItemCategory data) 
+        public async Task<ActionResult<ResponseDTO<ItemCategoryDTO>>> CreateItemCategory(ItemCategoryDTO data)
         {
-            return await _repository.CreateAsync(data);
+            ResponseDTO<ItemCategoryDTO> result = new ResponseDTO<ItemCategoryDTO>(null);
+            try
+            {
+                result = await _itemCategoryServices.CreateAsync(data);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(result);
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ResponseDTO<ItemCategoryDTO>>> GetItemCategory(int id)
+        {
+            ResponseDTO<ItemCategoryDTO> result = new ResponseDTO<ItemCategoryDTO>(null);
+            try
+            {
+                result = await _itemCategoryServices.GetAsync(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(result);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ItemCategoryDTO>>> GetItemCategory()
+        {
+            ResponseDTO<IEnumerable<ItemCategoryDTO>> result = new ResponseDTO<IEnumerable<ItemCategoryDTO>>(null);
+            try
+            {
+                result = await _itemCategoryServices.GetAsync();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(result);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ResponseDTO<ItemCategoryDTO>>> DeleteItemCategory(int id)
+        {
+            ResponseDTO<ItemCategoryDTO> result = new ResponseDTO<ItemCategoryDTO>(null);
+            try
+            {
+                result = await _itemCategoryServices.DeleteAsync(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(result);
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<ResponseDTO<ItemCategoryDTO>>> UpdateItemCategory(int id, ItemCategoryDTO data)
+        {
+            if (id != data.Id)
+                return BadRequest("Incorrect id");
+
+            ResponseDTO<ItemCategoryDTO> result = new ResponseDTO<ItemCategoryDTO>(null);
+            try
+            {
+                result = await _itemCategoryServices.UpdateAsync(data);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(result);
+            }
         }
     }
 }

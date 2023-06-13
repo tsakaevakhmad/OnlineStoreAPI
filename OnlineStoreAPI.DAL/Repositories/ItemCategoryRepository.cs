@@ -51,7 +51,7 @@ namespace OnlineStoreAPI.DAL.Repositories
         {
             try
             {
-                return await _db.ItemCategories.FindAsync(id);
+                return await _db.ItemCategories.Include(x => x.Category).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
             }
             catch (Exception ex)
             {
@@ -64,7 +64,7 @@ namespace OnlineStoreAPI.DAL.Repositories
         {
             try
             {
-                return await _db.ItemCategories.AsNoTracking().ToListAsync();
+                return await _db.ItemCategories.Include(x => x.Category).AsNoTracking().ToListAsync();
             }
             catch (Exception ex)
             {

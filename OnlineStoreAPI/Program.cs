@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Services
 builder.Services.AddTransient<ICategoryServices, CategoryServices>();
 builder.Services.AddTransient<ICompanyServices, CompanyServices>();
+builder.Services.AddTransient<IItemCategoryServices, ItemCategoryServices>();
 
 // Repository
 builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
@@ -20,7 +21,7 @@ builder.Services.AddScoped<IRepository<Company>, CompanyRepository>();
 builder.Services.AddScoped<IItemRepositories, ItemRepository>();
 
 //AutoMapperProfiles
-builder.Services.AddAutoMapper(typeof(CategoryProfile));
+builder.Services.AddAutoMapper(typeof(CategoryProfile), typeof(ItemCategoryProfile), typeof(CompanyProfile));
 
 var connection = builder.Configuration.GetSection("DB").Value;
 builder.Services.AddDbContext<AppDbContext>(option => option.UseNpgsql(connection));
