@@ -115,5 +115,19 @@ namespace OnlineStoreAPI.BLL.Services
                 return new ResponseDTO<ItemCategoryDTO>(result) { Message = ex.Message };
             }
         }
+
+        public async Task<ResponseDTO<ItemCategoryDTO>> UpdatePropertyAsync(ItemCategoryAddProperties data)
+        {
+            ItemCategoryDTO result = new ItemCategoryDTO();
+            try
+            {
+                result = _mapper.Map<ItemCategoryDTO>(await _repository.UpdatePropertyAsync(_mapper.Map<ItemCategory>(data)));
+                return new ResponseDTO<ItemCategoryDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<ItemCategoryDTO>(result) { Message = ex.Message };
+            }
+        }
     }
 }

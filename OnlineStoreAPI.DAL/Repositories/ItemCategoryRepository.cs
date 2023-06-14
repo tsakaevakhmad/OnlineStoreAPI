@@ -3,6 +3,8 @@ using Microsoft.Extensions.Logging;
 using OnlineStoreAPI.DAL.Contexts;
 using OnlineStoreAPI.DAL.Interfaces;
 using OnlineStoreAPI.Domain.Entities;
+using System;
+using System.Linq;
 
 namespace OnlineStoreAPI.DAL.Repositories
 {
@@ -83,7 +85,34 @@ namespace OnlineStoreAPI.DAL.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogCritical(ex, $"Error when add ItemCategory to item {data.Id}");
+                _logger.LogCritical(ex, $"Error when delete ItemCategory to item {data.Id}");
+                throw ex;
+            }
+        }
+
+        public async Task<ItemCategory> UpdatePropertyAsync(ItemCategory data)
+        {
+            try
+            {
+                var result = await _db.ItemCategories
+                .Include(x => x.ItemProperty)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == data.Id);
+
+                foreach (var property in data.ItemProperty)
+                {
+                    int index = result.ItemProperty.IndexOf(result.ItemProperty.Where(x => x.Id == property.Id).FirstOrDefault());
+                    result.ItemProperty[index] = property;
+                }
+
+                _db.Entry(result).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, $"Error when delete ItemCategory to item {data.Id}");
                 throw ex;
             }
         }

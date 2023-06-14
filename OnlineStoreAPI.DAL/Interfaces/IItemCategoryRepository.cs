@@ -6,5 +6,6 @@ namespace OnlineStoreAPI.DAL.Interfaces
     {
         public Task<ItemCategory> AddPropertyAsync(ItemCategory data);
         public Task<ItemCategory> DeletePropertyAsync(ItemCategory data);
+        public Task<ItemCategory> UpdatePropertyAsync(ItemCategory data);
     }
 }

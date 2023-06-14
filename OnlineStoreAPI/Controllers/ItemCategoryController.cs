@@ -113,6 +113,24 @@ namespace OnlineStoreAPI.Controllers
             }
         }
 
+        [HttpPut("{id}")]
+        public async Task<ActionResult<ResponseDTO<ItemCategoryDTO>>> UpdatePropertyToItemCategory(int id, ItemCategoryAddProperties data)
+        {
+            if (id != data.ItemCategoryId)
+                return BadRequest("Incorrect id");
+
+            ResponseDTO<ItemCategoryDTO> result = new ResponseDTO<ItemCategoryDTO>(null);
+            try
+            {
+                result = await _itemCategoryServices.UpdatePropertyAsync(data);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(result);
+            }
+        }
+
         [HttpDelete("{id}")]
         public async Task<ActionResult<ResponseDTO<ItemCategoryDTO>>> DeletePropertyToItemCategory(int id, ItemCategoryDeleteProperties data)
         {
