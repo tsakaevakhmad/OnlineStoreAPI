@@ -10,12 +10,26 @@ namespace OnlineStoreAPI.BLL.Services
     public class ItemCategoryServices : IItemCategoryServices
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<ItemCategory> _repository;
+        private readonly IItemCategoryRepository _repository;
 
-        public ItemCategoryServices(IMapper mapper, IRepository<ItemCategory> repository) 
+        public ItemCategoryServices(IMapper mapper, IItemCategoryRepository repository) 
         {
             _mapper = mapper;
             _repository = repository;
+        }
+
+        public async Task<ResponseDTO<ItemCategoryDTO>> AddPropertyAsync(ItemCategoryAddProperties data)
+        {
+            ItemCategoryDTO result = new ItemCategoryDTO();
+            try
+            {
+                result = _mapper.Map<ItemCategoryDTO>(await _repository.AddPropertyAsync(_mapper.Map<ItemCategory>(data)));
+                return new ResponseDTO<ItemCategoryDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<ItemCategoryDTO>(result) { Message = ex.Message };
+            }
         }
 
         public async Task<ResponseDTO<ItemCategoryDTO>> CreateAsync(ItemCategoryDTO data)
@@ -38,6 +52,20 @@ namespace OnlineStoreAPI.BLL.Services
             try
             {
                 result = _mapper.Map<ItemCategoryDTO>(await _repository.DeleteAsync(id));
+                return new ResponseDTO<ItemCategoryDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<ItemCategoryDTO>(result) { Message = ex.Message };
+            }
+        }
+
+        public async Task<ResponseDTO<ItemCategoryDTO>> DeletePropertyAsync(ItemCategoryDeleteProperties data)
+        {
+            ItemCategoryDTO result = new ItemCategoryDTO();
+            try
+            {
+                result = _mapper.Map<ItemCategoryDTO>(await _repository.DeletePropertyAsync(_mapper.Map<ItemCategory>(data)));
                 return new ResponseDTO<ItemCategoryDTO>(result);
             }
             catch (Exception ex)

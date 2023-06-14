@@ -10,6 +10,6 @@
 
         public List<Item>? Items { get; set; }
 
-        public List<ItemProperty>? ItemProperty { get; set; }
+        public List<ItemProperty>? ItemProperty { get; set; } = new List<ItemProperty>();
     }
 }

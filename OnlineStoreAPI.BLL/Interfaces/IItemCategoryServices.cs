@@ -10,5 +10,7 @@ namespace OnlineStoreAPI.BLL.Interfaces
         public Task<ResponseDTO<ItemCategoryDTO>> UpdateAsync(ItemCategoryDTO data);
         public Task<ResponseDTO<ItemCategoryDTO>> DeleteAsync(int id);
         public Task<ResponseDTO<ItemCategoryDTO>> CreateAsync(ItemCategoryDTO data);
+        public Task<ResponseDTO<ItemCategoryDTO>> DeletePropertyAsync(ItemCategoryDeleteProperties data);
+        public Task<ResponseDTO<ItemCategoryDTO>> AddPropertyAsync(ItemCategoryAddProperties data);
     }
 }

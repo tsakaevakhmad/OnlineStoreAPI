@@ -12,7 +12,7 @@ namespace OnlineStoreAPI.Controllers
     {
         private readonly IItemCategoryServices _itemCategoryServices;
 
-        public ItemCategoryController(IItemCategoryServices itemCategoryServices) 
+        public ItemCategoryController(IItemCategoryServices itemCategoryServices)
         {
             _itemCategoryServices = itemCategoryServices;
         }
@@ -87,6 +87,42 @@ namespace OnlineStoreAPI.Controllers
             try
             {
                 result = await _itemCategoryServices.UpdateAsync(data);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(result);
+            }
+        }
+
+        [HttpPost("{id}")]
+        public async Task<ActionResult<ResponseDTO<ItemCategoryDTO>>> AddPropertyToItemCategory(int id, ItemCategoryAddProperties data)
+        {
+            if (id != data.ItemCategoryId)
+                return BadRequest("Incorrect id");
+
+            ResponseDTO<ItemCategoryDTO> result = new ResponseDTO<ItemCategoryDTO>(null);
+            try
+            {
+                result = await _itemCategoryServices.AddPropertyAsync(data);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(result);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ResponseDTO<ItemCategoryDTO>>> DeletePropertyToItemCategory(int id, ItemCategoryDeleteProperties data)
+        {
+            if (id != data.ItemCategoryId)
+                return BadRequest("Incorrect id");
+
+            ResponseDTO<ItemCategoryDTO> result = new ResponseDTO<ItemCategoryDTO>(null);
+            try
+            {
+                result = await _itemCategoryServices.DeletePropertyAsync(data);
                 return Ok(result);
             }
             catch (Exception ex)

@@ -10,5 +10,6 @@ namespace OnlineStoreAPI.BLL.Interfaces
         public Task<ResponseDTO<ItemDTO>> UpdateAsync(ItemAddDTO data);
         public Task<ResponseDTO<ItemDTO>> DeleteAsync(int id);
         public Task<ResponseDTO<ItemDTO>> CreateAsync(ItemAddDTO data);
+        public Task<ResponseDTO<ItemDTO>> CreateProperyAsync(ItemAddDTO data);
     }
 }

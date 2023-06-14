@@ -16,7 +16,7 @@ builder.Services.AddTransient<IItemCategoryServices, ItemCategoryServices>();
 
 // Repository
 builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
-builder.Services.AddScoped<IRepository<ItemCategory>, ItemCategoryRepository>();
+builder.Services.AddScoped<IItemCategoryRepository, ItemCategoryRepository>();
 builder.Services.AddScoped<IRepository<Company>, CompanyRepository>();
 builder.Services.AddScoped<IItemRepositories, ItemRepository>();
 
