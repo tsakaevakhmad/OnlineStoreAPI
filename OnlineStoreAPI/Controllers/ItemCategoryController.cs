@@ -78,7 +78,7 @@ namespace OnlineStoreAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<ResponseDTO<ItemCategoryDTO>>> UpdateItemCategory(int id, ItemCategoryDTO data)
+        public async Task<ActionResult<ResponseDTO<ItemCategoryDTO>>> UpdateItemCategory(int id, UpdateItemCategory data)
         {
             if (id != data.Id)
                 return BadRequest("Incorrect id");

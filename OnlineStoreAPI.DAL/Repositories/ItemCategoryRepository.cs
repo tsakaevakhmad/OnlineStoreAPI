@@ -57,7 +57,15 @@ namespace OnlineStoreAPI.DAL.Repositories
         {
             try
             {
-                var result = _db.ItemCategories.Remove(await _db.ItemCategories.FindAsync(id));
+                var requst = await _db.ItemCategories
+                    .AsNoTracking()
+                    .Include(x => x.ItemProperty)
+                    .FirstOrDefaultAsync(x => x.Id == id);
+
+                var result = _db.ItemCategories
+                    .Remove(requst);
+                _db.ItemPropertis.RemoveRange(requst.ItemProperty);
+
                 await _db.SaveChangesAsync();
                 return result.Entity;
             }
