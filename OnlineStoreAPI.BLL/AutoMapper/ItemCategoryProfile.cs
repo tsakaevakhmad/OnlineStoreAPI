@@ -37,6 +37,8 @@ namespace OnlineStoreAPI.BLL.AutoMapper
                 .ForMember(x => x.Id, e => e.MapFrom(x => x));
 
             CreateMap<UpdateItemCategory, ItemCategory>();
+
+            CreateMap<ItemCategory, ItemCategoryShort>().ReverseMap();
         }
     }
 }

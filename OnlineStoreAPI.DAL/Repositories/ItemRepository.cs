@@ -25,7 +25,7 @@ namespace OnlineStoreAPI.DAL.Repositories
                 await UpdatePriceHistoryAsync(data);
                 await _db.ItemProperyValues.AddRangeAsync(data.ItemProperyValue);
                 await _db.SaveChangesAsync();
-                return data;
+                return result.Entity;
             }
             catch(Exception ex)
             {

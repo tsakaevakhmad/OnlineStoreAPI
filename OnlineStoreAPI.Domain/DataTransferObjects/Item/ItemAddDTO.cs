@@ -8,12 +8,13 @@
         public DateTime ReleaseDate { get; set; }
         public int CompanyId { get; set; }
         public int ItemCategoryId { get; set; }
-        public List<ItemPropertyValueAdd> ItemProperyValues { get; set; }
+        public List<ItemPropertyValueAdd>? ItemProperyValues { get; set; }
     }
 
     public class ItemPropertyValueAdd
     {
         public int Id { get; set; }
         public string Value { get; set; }
+        public int ItemPropertyId { get; set; }
     } 
 }

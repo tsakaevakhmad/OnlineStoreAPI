@@ -3,7 +3,7 @@ using OnlineStoreAPI.Domain.DataTransferObjects.Item;
 
 namespace OnlineStoreAPI.BLL.Interfaces
 {
-    internal interface IItemServices
+    public interface IItemServices
     {
         public Task<ResponseDTO<ItemDTO>> GetAsync(int id);
         public Task<ResponseDTO<IEnumerable<ItemShortDTO>>> GetAsync();

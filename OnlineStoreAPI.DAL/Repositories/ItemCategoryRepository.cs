@@ -93,7 +93,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogCritical(ex, $"Error when delete ItemCategory to item {data.Id}");
+                _logger.LogCritical(ex, $"Error when delete ItemCategory from item {data.Id}");
                 throw ex;
             }
         }

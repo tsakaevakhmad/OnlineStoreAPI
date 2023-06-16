@@ -13,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddTransient<ICategoryServices, CategoryServices>();
 builder.Services.AddTransient<ICompanyServices, CompanyServices>();
 builder.Services.AddTransient<IItemCategoryServices, ItemCategoryServices>();
+builder.Services.AddTransient<IItemServices, ItemServices>();
 
 // Repository
 builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
