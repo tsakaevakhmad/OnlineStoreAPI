@@ -1,4 +1,5 @@
-﻿using OnlineStoreAPI.Domain.Entities;
+﻿using OnlineStoreAPI.Domain.DataTransferObjects.Item;
+using OnlineStoreAPI.Domain.Entities;
 
 namespace OnlineStoreAPI.DAL.Interfaces
 {
@@ -6,5 +7,6 @@ namespace OnlineStoreAPI.DAL.Interfaces
     {
         public Task<ItemProperty> CreatePropertyAsync(ItemProperty data);
         public Task<ItemPriceHistory> GetPriceHistoryAsync(int itemId);
+        public Task<IEnumerable<Item>> GetSearchArgumentsAsync(ItemSearchArguments searchArguments);
     }
 }

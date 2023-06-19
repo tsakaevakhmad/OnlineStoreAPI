@@ -46,6 +46,21 @@ namespace OnlineStoreAPI.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<ActionResult<ResponseDTO<IEnumerable<ItemShortDTO>>>> GetItemSearchArguments([FromQuery]ItemSearchArguments searchArguments)
+        {
+            ResponseDTO<IEnumerable<ItemShortDTO>> result = new ResponseDTO<IEnumerable<ItemShortDTO>>(null);
+            try
+            {
+                result = await _itemServices.GetItemSearchArgumentsAsync(searchArguments);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(result);
+            }
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<ResponseDTO<ItemDTO>>> GetItem(int id)
         {

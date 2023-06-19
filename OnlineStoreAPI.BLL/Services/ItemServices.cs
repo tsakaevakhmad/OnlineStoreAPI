@@ -88,6 +88,20 @@ namespace OnlineStoreAPI.BLL.Services
             }
         }
 
+        public async Task<ResponseDTO<IEnumerable<ItemShortDTO>>> GetItemSearchArgumentsAsync(ItemSearchArguments searchArguments)
+        {
+            IEnumerable<ItemShortDTO> result = new List<ItemShortDTO>();
+            try
+            {
+                result = _mapper.Map<IEnumerable<ItemShortDTO>>(await _repository.GetSearchArgumentsAsync(searchArguments));
+                return new ResponseDTO<IEnumerable<ItemShortDTO>>(result);
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<IEnumerable<ItemShortDTO>>(result) { Message = ex.Message };
+            }
+        }
+
         public async Task<ResponseDTO<ItemDTO>> UpdateAsync(ItemAddDTO data)
         {
             ItemDTO result = new ItemDTO();

@@ -1,8 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LinqKit;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OnlineStoreAPI.DAL.Contexts;
 using OnlineStoreAPI.DAL.Interfaces;
+using OnlineStoreAPI.Domain.DataTransferObjects.Item;
 using OnlineStoreAPI.Domain.Entities;
+using System.Linq.Expressions;
+using System.Text.Json;
 
 namespace OnlineStoreAPI.DAL.Repositories
 {
@@ -147,6 +151,59 @@ namespace OnlineStoreAPI.DAL.Repositories
             {
                 throw ex;
             }
+        }
+
+        public async Task<IEnumerable<Item>> GetSearchArgumentsAsync(ItemSearchArguments searchArguments)
+        {
+            try
+            {
+                return await _db.Items
+                    .Include(x => x.ItemPriceHistories)
+                    .Include(x => x.ItemCategory)
+                    .Include(x => x.Company)
+                    .Include(x => x.ItemProperyValue)
+                    .ThenInclude(x => x.ItemProperty)
+                    .AsNoTracking()
+                    .Where(GetItemExpression(searchArguments))
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, $"Error when get item by search arguments {JsonSerializer.Serialize(searchArguments)}");
+                throw ex;
+            }
+        }
+
+        private ExpressionStarter<Item> GetItemExpression(ItemSearchArguments searchArguments)
+        {
+            var filter = PredicateBuilder.New<Item>(true);
+
+            if (searchArguments.ItemCategoryId > 0)
+            {
+                filter = filter.And(item => item.ItemCategoryId == searchArguments.ItemCategoryId);
+            }
+
+            if (!string.IsNullOrEmpty(searchArguments.ItemName))
+            {
+                filter = filter.And(item => item.Title.ToUpper().Contains(searchArguments.ItemName.ToUpper()));
+            }
+
+            if (!string.IsNullOrEmpty(searchArguments.CompanyName))
+            {
+                filter = filter.And(item => item.Company.Name.ToUpper().Contains(searchArguments.CompanyName.ToUpper()));
+            }
+
+            if (searchArguments.FromPrice > 0 | searchArguments.ToPrice > 0)
+            {
+                filter = filter.And(item => item.Price >= searchArguments.FromPrice & item.Price <= searchArguments.ToPrice);
+            }
+            //Нужно допилить
+            if (searchArguments.Property != null && searchArguments.Property.Count > 0)
+            {
+                filter = filter.And(item => item.ItemProperyValue.Any(e => searchArguments.Property.Any(x => x.Value == e.Value)));
+            }
+
+            return filter;
         }
     }
 }
