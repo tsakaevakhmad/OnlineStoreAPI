@@ -207,9 +207,16 @@ namespace OnlineStoreAPI.DAL.Repositories
             var filter = PredicateBuilder.New<Item>(true);
 
             //Нужно допилить
-            if (itemProperties != null || itemProperties.Count > 0)
+            if (itemProperties != null)
             {
-                filter = filter.And(item => item.ItemProperyValue.Any(prop => itemProperties.Any(x => (prop.ItemPropertyId == x.ItemPropertyId) && prop.Value.Contains(x.Value))));
+                filter = filter
+                .And(item => item.ItemProperyValue
+                .Any(prop => itemProperties
+                .Any(x => (prop.ItemPropertyId == x.ItemPropertyId)
+                    && (prop.ItemProperty.ValueType == "int" && Convert.ToInt32(prop.Value) == Convert.ToInt32(x.Value)
+                        || prop.ItemProperty.ValueType == "bool" && Convert.ToBoolean(prop.Value) == Convert.ToBoolean(x.Value)
+                        || prop.ItemProperty.ValueType == "double" && Convert.ToDouble(prop.Value) == Convert.ToDouble(x.Value)
+                        || prop.Value.Contains(x.Value)))));
             }
 
             return filter;
