@@ -206,8 +206,7 @@ namespace OnlineStoreAPI.DAL.Repositories
         {
             var filter = PredicateBuilder.New<Item>(true);
 
-            //Нужно допилить
-            if (itemProperties != null)
+            if (itemProperties != null && itemProperties.Count > 0)
             {
                 filter = filter
                 .And(item => item.ItemProperyValue
