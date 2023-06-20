@@ -202,7 +202,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             return filter;
         }
 
-        private ExpressionStarter<Item> GetItemPropertyExpression(List<ItemPropertyList> itemProperties)
+        private ExpressionStarter<Item> GetItemPropertyExpression(List<ItemPrpertySearchList> itemProperties)
         {
             var filter = PredicateBuilder.New<Item>(true);
 
@@ -213,10 +213,10 @@ namespace OnlineStoreAPI.DAL.Repositories
                 .And(item => item.ItemProperyValue
                 .Any(prop => itemProperties
                 .Any(x => (prop.ItemPropertyId == x.ItemPropertyId)
-                    && (prop.ItemProperty.ValueType == "int" && Convert.ToInt32(prop.Value) == Convert.ToInt32(x.Value)
-                        || prop.ItemProperty.ValueType == "bool" && Convert.ToBoolean(prop.Value) == Convert.ToBoolean(x.Value)
-                        || prop.ItemProperty.ValueType == "double" && Convert.ToDouble(prop.Value) == Convert.ToDouble(x.Value)
-                        || prop.Value.Contains(x.Value)))));
+                    && (prop.ItemProperty.ValueType == "int" && Convert.ToInt32(prop.Value) >= Convert.ToInt32(x.ValueFrom) && Convert.ToInt32(prop.Value) <= Convert.ToInt32(x.ValueTo)
+                        || prop.ItemProperty.ValueType == "bool" && Convert.ToBoolean(prop.Value) == Convert.ToBoolean(x.ValueFrom)
+                        || prop.ItemProperty.ValueType == "double" && Convert.ToDouble(prop.Value) >= Convert.ToDouble(x.ValueFrom) && Convert.ToDouble(prop.Value) <= Convert.ToDouble(x.ValueTo)
+                        || prop.Value.Contains(x.ValueFrom)))));
             }
 
             return filter;
