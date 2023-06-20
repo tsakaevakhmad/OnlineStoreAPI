@@ -46,8 +46,8 @@ namespace OnlineStoreAPI.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<ActionResult<ResponseDTO<IEnumerable<ItemShortDTO>>>> GetItemSearchArguments([FromQuery]ItemSearchArguments searchArguments)
+        [HttpPost]
+        public async Task<ActionResult<ResponseDTO<IEnumerable<ItemShortDTO>>>> GetItemSearchArguments(ItemSearchArguments searchArguments)
         {
             ResponseDTO<IEnumerable<ItemShortDTO>> result = new ResponseDTO<IEnumerable<ItemShortDTO>>(null);
             try

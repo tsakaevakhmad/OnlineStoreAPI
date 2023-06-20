@@ -157,7 +157,7 @@ namespace OnlineStoreAPI.DAL.Repositories
         {
             try
             {
-                return await _db.Items
+                return (await _db.Items
                     .Include(x => x.ItemPriceHistories)
                     .Include(x => x.ItemCategory)
                     .Include(x => x.Company)
@@ -165,7 +165,8 @@ namespace OnlineStoreAPI.DAL.Repositories
                     .ThenInclude(x => x.ItemProperty)
                     .AsNoTracking()
                     .Where(GetItemExpression(searchArguments))
-                    .ToListAsync();
+                    .ToListAsync())
+                    .Where(GetItemPropertyExpression(searchArguments.Property));
             }
             catch (Exception ex)
             {
@@ -197,10 +198,18 @@ namespace OnlineStoreAPI.DAL.Repositories
             {
                 filter = filter.And(item => item.Price >= searchArguments.FromPrice & item.Price <= searchArguments.ToPrice);
             }
+
+            return filter;
+        }
+
+        private ExpressionStarter<Item> GetItemPropertyExpression(List<ItemPropertyList> itemProperties)
+        {
+            var filter = PredicateBuilder.New<Item>(true);
+
             //Нужно допилить
-            if (searchArguments.Property != null && searchArguments.Property.Count > 0)
+            if (itemProperties != null || itemProperties.Count > 0)
             {
-                filter = filter.And(item => item.ItemProperyValue.Any(e => searchArguments.Property.Any(x => x.Value == e.Value)));
+                filter = filter.And(item => item.ItemProperyValue.Any(prop => itemProperties.Any(x => (prop.ItemPropertyId == x.ItemPropertyId) && prop.Value.Contains(x.Value))));
             }
 
             return filter;
