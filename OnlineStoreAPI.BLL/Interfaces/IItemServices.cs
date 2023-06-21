@@ -13,5 +13,6 @@ namespace OnlineStoreAPI.BLL.Interfaces
         public Task<ResponseDTO<ItemDTO>> CreateAsync(ItemAddDTO data);
         public Task<ResponseDTO<ItemDTO>> CreateProperyAsync(ItemAddDTO data);
         public Task<ResponseDTO<IEnumerable<ItemPriceHistoryDTO>>> GetItemPriceHistoryAsync(int itemId);
+        public Task<ResponseDTO<PropertyValuesDistinct>> GetDistinctValuesAsync(int itemCategoryId);
     }
 }

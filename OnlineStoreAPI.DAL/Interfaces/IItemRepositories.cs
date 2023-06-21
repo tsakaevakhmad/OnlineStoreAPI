@@ -8,5 +8,6 @@ namespace OnlineStoreAPI.DAL.Interfaces
         public Task<ItemProperty> CreatePropertyAsync(ItemProperty data);
         public Task<IEnumerable<Item>> GetSearchArgumentsAsync(ItemSearchArguments searchArguments);
         public Task<IEnumerable<ItemPriceHistory>> GetPriceHistoryAsync(int itemId);
+        public Task<PropertyValuesDistinct> GetPropertyValuesDistinct(int itemCategoryId);
     }
 }

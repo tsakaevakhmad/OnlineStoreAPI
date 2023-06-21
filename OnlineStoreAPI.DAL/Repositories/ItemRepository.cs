@@ -6,6 +6,7 @@ using OnlineStoreAPI.DAL.Interfaces;
 using OnlineStoreAPI.Domain.DataTransferObjects.Item;
 using OnlineStoreAPI.Domain.Entities;
 using System.Linq.Expressions;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 
 namespace OnlineStoreAPI.DAL.Repositories
@@ -217,6 +218,38 @@ namespace OnlineStoreAPI.DAL.Repositories
             }
 
             return filter;
+        }
+
+        public async Task<PropertyValuesDistinct> GetPropertyValuesDistinct(int itemCategoryId)
+        {
+            try
+            {
+                var result = await _db.ItemProperyValues
+                    .AsNoTracking()
+                    .Include(x => x.Item)
+                    .ThenInclude(x => x.Company)
+                    .Include(x => x.ItemProperty)
+                    .Where(x => x.Item.ItemCategoryId == itemCategoryId)
+                    .ToListAsync();
+
+                return new PropertyValuesDistinct
+                {
+                    CompanyNames = result.Select(x => x.Item.Company.Name).Distinct().ToList(),
+                    PropertyLists = (from props in result
+                                     group props by props.ItemPropertyId into groupedProps
+                                     select new PropertyValues
+                                     {
+                                         PropertyId = groupedProps.Key,
+                                         PropertyName = groupedProps.First().ItemProperty.Name,
+                                         Values = groupedProps.Select(x => x.Value).Distinct().ToList(),
+                                     }).ToList()
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, $"Error when getting distinct values from Item Categoty id: {itemCategoryId}");
+                throw ex;
+            }
         }
     }
 }

@@ -2,9 +2,8 @@
 using Microsoft.Extensions.Logging;
 using OnlineStoreAPI.DAL.Contexts;
 using OnlineStoreAPI.DAL.Interfaces;
+using OnlineStoreAPI.Domain.DataTransferObjects.Item;
 using OnlineStoreAPI.Domain.Entities;
-using System;
-using System.Linq;
 
 namespace OnlineStoreAPI.DAL.Repositories
 {

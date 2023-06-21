@@ -4,6 +4,7 @@ using OnlineStoreAPI.DAL.Interfaces;
 using OnlineStoreAPI.Domain.DataTransferObjects;
 using OnlineStoreAPI.Domain.DataTransferObjects.Item;
 using OnlineStoreAPI.Domain.Entities;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace OnlineStoreAPI.BLL.Services
 {
@@ -127,6 +128,20 @@ namespace OnlineStoreAPI.BLL.Services
             catch (Exception ex)
             {
                 return new ResponseDTO<ItemDTO>(result) { Message = ex.Message };
+            }
+        }
+
+        public async Task<ResponseDTO<PropertyValuesDistinct>> GetDistinctValuesAsync(int itemCategoryId)
+        {
+            PropertyValuesDistinct result = new PropertyValuesDistinct();
+            try
+            {
+                result = await _repository.GetPropertyValuesDistinct(itemCategoryId);
+                return new ResponseDTO<PropertyValuesDistinct>(result);
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<PropertyValuesDistinct>(result) { Message = ex.Message };
             }
         }
     }

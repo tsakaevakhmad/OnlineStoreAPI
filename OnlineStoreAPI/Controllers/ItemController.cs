@@ -76,6 +76,21 @@ namespace OnlineStoreAPI.Controllers
             }
         }
 
+        [HttpGet("{itemCategoryId}")]
+        public async Task<ActionResult<ResponseDTO<IEnumerable<PropertyValuesDistinct>>>> GetDistinctValuesAsync(int itemCategoryId)
+        {
+            ResponseDTO<PropertyValuesDistinct> result = new ResponseDTO<PropertyValuesDistinct>(null);
+            try
+            {
+                result = await _itemServices.GetDistinctValuesAsync(itemCategoryId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(result);
+            }
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<ResponseDTO<ItemDTO>>> GetItem(int id)
         {
