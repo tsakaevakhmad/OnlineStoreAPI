@@ -22,6 +22,9 @@ namespace OnlineStoreAPI.BLL.AutoMapper
             CreateMap<Item, ItemShortDTO>()
                 .ReverseMap();
 
+            CreateMap<ItemPriceHistory, ItemPriceHistoryDTO>()
+                .ReverseMap();
+
             CreateMap<ItemProperyValue, ItemPropertyList>()
                 .ForMember(x => x.ItemPropertyValueId, x=> x.MapFrom(x => x.Id))
                 .ForMember(x => x.Name, x=> x.MapFrom(x => x.ItemProperty.Name))

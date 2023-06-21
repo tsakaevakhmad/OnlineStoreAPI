@@ -61,6 +61,21 @@ namespace OnlineStoreAPI.Controllers
             }
         }
 
+        [HttpGet("{itemId}")]
+        public async Task<ActionResult<ResponseDTO<IEnumerable<ItemPriceHistoryDTO>>>> GetItemPriceHistory(int itemId)
+        {
+            ResponseDTO<IEnumerable<ItemPriceHistoryDTO>> result = new ResponseDTO<IEnumerable<ItemPriceHistoryDTO>>(null);
+            try
+            {
+                result = await _itemServices.GetItemPriceHistoryAsync(itemId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(result);
+            }
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<ResponseDTO<ItemDTO>>> GetItem(int id)
         {

@@ -53,21 +53,6 @@ namespace OnlineStoreAPI.DAL.Repositories
             }
         }
 
-        public async Task<ItemPriceHistory> GetPriceHistoryAsync(int itemId)
-        {
-            try
-            { 
-                return await _db.ItemPriceHistories
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(x => x.ItemId == itemId); ;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogCritical(ex, $"Error when get item price history {itemId}");
-                throw ex;
-            }
-        }
-
         public async Task<Item> DeleteAsync(int id)
         {
             try
@@ -171,6 +156,19 @@ namespace OnlineStoreAPI.DAL.Repositories
             catch (Exception ex)
             {
                 _logger.LogCritical(ex, $"Error when get item by search arguments {JsonSerializer.Serialize(searchArguments)}");
+                throw ex;
+            }
+        }
+
+        public async Task<IEnumerable<ItemPriceHistory>> GetPriceHistoryAsync(int itemId)
+        {
+            try
+            {
+                return await _db.ItemPriceHistories.Where(x => x.ItemId == itemId).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, $"Error when get item price history itemId: {itemId}");
                 throw ex;
             }
         }
