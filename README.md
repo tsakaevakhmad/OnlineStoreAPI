@@ -115,3 +115,86 @@
   ]
 }
 ```
+
+# ITEM CATEGORY API
+## 1) Create
+### api/itemCategory/CreateItemCategory
+```json
+{
+  "id": 0,
+  "name": "Блоки питания",
+  "categoryId": 1,
+  "itemProperties": [
+    {
+      "id": 0,
+      "name": "Мощность",
+      "valueType": "int"
+    },
+    {
+      "id": 0,
+      "name": "Форм-фактор",
+      "valueType": "string"
+    },
+    {
+      "id": 0,
+      "name": "Корректор коэффициента мощности (PFC)",
+      "valueType": "string"
+    },
+    {
+      "id": 0,
+      "name": "Разъемы PCIe 16pin (12+4 12VHPWR)",
+      "valueType": "int"
+    },
+    {
+      "id": 0,
+      "name": "Разъемы PCIe 8 pin",
+      "valueType": "int"
+    },
+    {
+      "id": 0,
+      "name": "Разъемы PCIe 6 pin",
+      "valueType": "int"
+    },
+    {
+      "id": 0,
+      "name": "Разъемы Molex",
+      "valueType": "int"
+    },
+    {
+      "id": 0,
+      "name": "Разъемы SATA",
+      "valueType": "int"
+    },
+    {
+      "id": 0,
+      "name": "Система охлаждения",
+      "valueType": "string"
+    },
+    {
+      "id": 0,
+      "name": "Количество вентиляторов",
+      "valueType": "int"
+    },
+    {
+      "id": 0,
+      "name": "Размер вентилятора",
+      "valueType": "int"
+    },
+    {
+      "id": 0,
+      "name": "Сертификат 80 PLUS",
+      "valueType": "string"
+    },
+    {
+      "id": 0,
+      "name": "Кабельная разводка",
+      "valueType": "bool"
+    },
+    {
+      "id": 0,
+      "name": "С подсветкой",
+      "valueType": "bool"
+    }
+  ]
+}
+```
