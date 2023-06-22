@@ -13,7 +13,14 @@ namespace OnlineStoreAPI.BLL.AutoMapper
                 .ForMember(x => x.ItemProperty, e => e.MapFrom(x => x.ItemProperties))
                 .ReverseMap()
                 .ForMember(x => x.CategoryName, e => e.MapFrom(w => w.Category.Name));
-            
+
+            CreateMap<ItemCategoryAdd, ItemCategory>()
+                .ForMember(x => x.ItemProperty, e => e.MapFrom(x => x.ItemProperties))
+                .ReverseMap();
+
+            CreateMap<ItemPropertyAdd, ItemProperty>()
+                .ReverseMap();
+
             CreateMap<ItemPropertyList, ItemProperty>()
                 .ForMember(x => x.Id, e => e.MapFrom(x => x.ItemPropertyId))
                 .ForMember(x => x.Name, e => e.MapFrom(x => x.Name))

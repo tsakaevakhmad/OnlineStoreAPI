@@ -32,7 +32,7 @@ namespace OnlineStoreAPI.BLL.Services
             }
         }
 
-        public async Task<ResponseDTO<ItemCategoryDTO>> CreateAsync(ItemCategoryDTO data)
+        public async Task<ResponseDTO<ItemCategoryDTO>> CreateAsync(ItemCategoryAdd data)
         {
             ItemCategoryDTO result = new ItemCategoryDTO();
             try

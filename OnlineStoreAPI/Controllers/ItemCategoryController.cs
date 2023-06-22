@@ -18,7 +18,7 @@ namespace OnlineStoreAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ResponseDTO<ItemCategoryDTO>>> CreateItemCategory(ItemCategoryDTO data)
+        public async Task<ActionResult<ResponseDTO<ItemCategoryDTO>>> CreateItemCategory(ItemCategoryAdd data)
         {
             ResponseDTO<ItemCategoryDTO> result = new ResponseDTO<ItemCategoryDTO>(null);
             try
