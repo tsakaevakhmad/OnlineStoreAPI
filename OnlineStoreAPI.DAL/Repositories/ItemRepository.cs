@@ -22,7 +22,7 @@ namespace OnlineStoreAPI.DAL.Repositories
 
         public async Task<Item> CreateAsync(Item data)
         {
-            var transaction = _db.Database.BeginTransaction();
+            var transaction = await _db.Database.BeginTransactionAsync();
             try
             {
                 var result = await _db.Items.AddAsync(data);
@@ -105,7 +105,7 @@ namespace OnlineStoreAPI.DAL.Repositories
 
         public async Task<Item> UpdateAsync(Item data)
         {
-            var transaction = _db.Database.BeginTransaction();
+            var transaction = await _db.Database.BeginTransactionAsync();
             try
             {
                 var item = _db.Entry<Item>(data);
