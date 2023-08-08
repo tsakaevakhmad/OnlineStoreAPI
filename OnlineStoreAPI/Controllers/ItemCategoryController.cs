@@ -3,6 +3,7 @@ using OnlineStoreAPI.BLL.Interfaces;
 using OnlineStoreAPI.Domain.DataTransferObjects.Company;
 using OnlineStoreAPI.Domain.DataTransferObjects;
 using OnlineStoreAPI.Domain.DataTransferObjects.ItemCategory;
+using OnlineStoreAPI.Domain.Entities;
 
 namespace OnlineStoreAPI.Controllers
 {
@@ -95,10 +96,10 @@ namespace OnlineStoreAPI.Controllers
             }
         }
 
-        [HttpPost("{id}")]
-        public async Task<ActionResult<ResponseDTO<ItemCategoryDTO>>> AddPropertyToItemCategory(int id, ItemCategoryAddProperties data)
+        [HttpPost("{itemCategoryId}")]
+        public async Task<ActionResult<ResponseDTO<ItemCategoryDTO>>> AddPropertyToItemCategory(int itemCategoryId, ItemCategoryAddProperties data)
         {
-            if (id != data.ItemCategoryId)
+            if (itemCategoryId != data.ItemCategoryId)
                 return BadRequest("Incorrect id");
 
             ResponseDTO<ItemCategoryDTO> result = new ResponseDTO<ItemCategoryDTO>(null);
