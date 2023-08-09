@@ -84,8 +84,7 @@ namespace OnlineStoreAPI.BLL.Services
             IEnumerable<ItemShortDTO> result = new List<ItemShortDTO>();
             try
             {
-                result = _mapper.Map<IEnumerable<ItemShortDTO>>(await _repository.GetAsync());
-                    
+                result = _mapper.Map<IEnumerable<ItemShortDTO>>(await _repository.GetAsync());             
                 return new ResponseDTO<IEnumerable<ItemShortDTO>>(SortBy(ref result, sortBy, orderType));
             }
             catch (Exception ex)
@@ -108,13 +107,13 @@ namespace OnlineStoreAPI.BLL.Services
             }
         }
 
-        public async Task<ResponseDTO<IEnumerable<ItemShortDTO>>> GetItemSearchArgumentsAsync(ItemSearchArguments searchArguments)
+        public async Task<ResponseDTO<IEnumerable<ItemShortDTO>>> GetItemSearchArgumentsAsync(ItemSearchArguments searchArguments, string sortBy = null, string orderType = "DESC")
         {
             IEnumerable<ItemShortDTO> result = new List<ItemShortDTO>();
             try
             {
                 result = _mapper.Map<IEnumerable<ItemShortDTO>>(await _repository.GetSearchArgumentsAsync(searchArguments));
-                return new ResponseDTO<IEnumerable<ItemShortDTO>>(result);
+                return new ResponseDTO<IEnumerable<ItemShortDTO>>(SortBy(ref result, sortBy, orderType));
             }
             catch (Exception ex)
             {

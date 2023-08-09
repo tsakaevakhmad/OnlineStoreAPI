@@ -47,12 +47,12 @@ namespace OnlineStoreAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ResponseDTO<IEnumerable<ItemShortDTO>>>> GetItemSearchArguments(ItemSearchArguments searchArguments)
+        public async Task<ActionResult<ResponseDTO<IEnumerable<ItemShortDTO>>>> GetItemSearchArguments(ItemSearchArguments searchArguments, string sortBy = "", string orderType = "")
         {
             ResponseDTO<IEnumerable<ItemShortDTO>> result = new ResponseDTO<IEnumerable<ItemShortDTO>>(null);
             try
             {
-                result = await _itemServices.GetItemSearchArgumentsAsync(searchArguments);
+                result = await _itemServices.GetItemSearchArgumentsAsync(searchArguments, sortBy, orderType);
                 return Ok(result);
             }
             catch (Exception ex)

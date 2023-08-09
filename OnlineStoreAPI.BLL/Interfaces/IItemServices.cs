@@ -7,7 +7,7 @@ namespace OnlineStoreAPI.BLL.Interfaces
     {
         public Task<ResponseDTO<ItemDTO>> GetAsync(int id);
         public Task<ResponseDTO<IEnumerable<ItemShortDTO>>> GetAsync(string sortBy = null, string orderType = "DESC");
-        public Task<ResponseDTO<IEnumerable<ItemShortDTO>>> GetItemSearchArgumentsAsync(ItemSearchArguments searchArguments);
+        public Task<ResponseDTO<IEnumerable<ItemShortDTO>>> GetItemSearchArgumentsAsync(ItemSearchArguments searchArguments, string sortBy = null, string orderType = "DESC");
         public Task<ResponseDTO<ItemDTO>> UpdateAsync(ItemAddDTO data);
         public Task<ResponseDTO<ItemDTO>> DeleteAsync(int id);
         public Task<ResponseDTO<ItemDTO>> CreateAsync(ItemAddDTO data);
