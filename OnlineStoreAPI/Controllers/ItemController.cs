@@ -32,12 +32,12 @@ namespace OnlineStoreAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ResponseDTO<IEnumerable<ItemShortDTO>>>> GetItems()
+        public async Task<ActionResult<ResponseDTO<IEnumerable<ItemShortDTO>>>> GetItems(string sortBy = "", string orderType = "")
         {
             ResponseDTO<IEnumerable<ItemShortDTO>> result = new ResponseDTO<IEnumerable<ItemShortDTO>>(null);
             try
             {
-                result = await _itemServices.GetAsync();
+                result = await _itemServices.GetAsync(sortBy, orderType);
                 return Ok(result);
             }
             catch (Exception ex)

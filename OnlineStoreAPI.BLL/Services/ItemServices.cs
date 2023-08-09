@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
+using LinqKit;
+using Microsoft.Extensions.Primitives;
 using OnlineStoreAPI.BLL.Interfaces;
 using OnlineStoreAPI.DAL.Interfaces;
 using OnlineStoreAPI.Domain.DataTransferObjects;
 using OnlineStoreAPI.Domain.DataTransferObjects.Item;
 using OnlineStoreAPI.Domain.Entities;
+using System.Reflection;
+using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace OnlineStoreAPI.BLL.Services
@@ -75,13 +79,14 @@ namespace OnlineStoreAPI.BLL.Services
             }
         }
 
-        public async Task<ResponseDTO<IEnumerable<ItemShortDTO>>> GetAsync()
+        public async Task<ResponseDTO<IEnumerable<ItemShortDTO>>> GetAsync(string sortBy = null, string orderType = "DESC")
         {
             IEnumerable<ItemShortDTO> result = new List<ItemShortDTO>();
             try
             {
                 result = _mapper.Map<IEnumerable<ItemShortDTO>>(await _repository.GetAsync());
-                return new ResponseDTO<IEnumerable<ItemShortDTO>>(result);
+                    
+                return new ResponseDTO<IEnumerable<ItemShortDTO>>(SortBy(ref result, sortBy, orderType));
             }
             catch (Exception ex)
             {
@@ -143,6 +148,18 @@ namespace OnlineStoreAPI.BLL.Services
             {
                 return new ResponseDTO<PropertyValuesDistinct>(result) { Message = ex.Message };
             }
+        }
+
+        private IEnumerable<ItemShortDTO> SortBy(ref IEnumerable<ItemShortDTO> result, string sortBy, string orderType = "DESC")
+        {
+            sortBy = new StringBuilder(sortBy).Remove(0, 1).Insert(0, sortBy[0].ToString().ToUpper()).ToString();
+            if (!string.IsNullOrEmpty(sortBy))
+            {
+                if(orderType.ToUpper() == "ASC")
+                    return result.OrderBy(x => x.GetType().GetProperty(sortBy).GetValue(x));
+                return result.OrderByDescending(x => x.GetType().GetProperty(sortBy).GetValue(x));
+            }
+            return result;
         }
     }
 }
