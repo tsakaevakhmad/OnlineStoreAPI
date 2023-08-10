@@ -5,8 +5,6 @@ using OnlineStoreAPI.DAL.Contexts;
 using OnlineStoreAPI.DAL.Interfaces;
 using OnlineStoreAPI.Domain.DataTransferObjects.Item;
 using OnlineStoreAPI.Domain.Entities;
-using System.Linq.Expressions;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 
 namespace OnlineStoreAPI.DAL.Repositories
@@ -19,22 +17,25 @@ namespace OnlineStoreAPI.DAL.Repositories
         public ItemRepository(AppDbContext db, ILogger<ItemRepository> logger) 
         { 
             _db = db; 
-            _logger = logger;
+            _logger = logger;    
         }
 
         public async Task<Item> CreateAsync(Item data)
         {
+            var transaction = await _db.Database.BeginTransactionAsync();
             try
             {
                 var result = await _db.Items.AddAsync(data);
                 await UpdatePriceHistoryAsync(data);
                 await _db.ItemProperyValues.AddRangeAsync(data.ItemProperyValue);
                 await _db.SaveChangesAsync();
+                await transaction.CommitAsync();
                 return result.Entity;
             }
             catch(Exception ex)
             {
                 _logger.LogCritical(ex, $"Error when create item {data.Title}");
+                await transaction.RollbackAsync();
                 throw ex;
             }
         }
@@ -104,6 +105,7 @@ namespace OnlineStoreAPI.DAL.Repositories
 
         public async Task<Item> UpdateAsync(Item data)
         {
+            var transaction = await _db.Database.BeginTransactionAsync();
             try
             {
                 var item = _db.Entry<Item>(data);
@@ -118,11 +120,13 @@ namespace OnlineStoreAPI.DAL.Repositories
                 await UpdatePriceHistoryAsync(data);
 
                 await _db.SaveChangesAsync();
+                await transaction.CommitAsync();
                 return item.Entity;
             }
             catch (Exception ex)
             {
                 _logger.LogCritical(ex, $"Error when update item {data.Title}");
+                await transaction.RollbackAsync();
                 throw ex;
             }
         }

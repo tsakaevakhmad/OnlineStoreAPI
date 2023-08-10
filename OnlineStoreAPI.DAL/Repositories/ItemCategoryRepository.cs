@@ -20,6 +20,7 @@ namespace OnlineStoreAPI.DAL.Repositories
 
         public async Task<ItemCategory> AddPropertyAsync(ItemCategory data)
         {
+            var transaction = await _db.Database.BeginTransactionAsync();
             try
             {
                 var result = await _db.ItemCategories
@@ -28,11 +29,13 @@ namespace OnlineStoreAPI.DAL.Repositories
                 result.ItemProperty.AddRange(data.ItemProperty);
                 _db.ItemCategories.Update(result);
                 await _db.SaveChangesAsync();
+                await transaction.CommitAsync();
                 return result;
             }
             catch (Exception ex)
             {
                 _logger.LogCritical(ex, $"Error when add ItemCategory to item {data.Id}");
+                await transaction.RollbackAsync();
                 throw ex;
             }
         }
@@ -54,6 +57,7 @@ namespace OnlineStoreAPI.DAL.Repositories
 
         public async Task<ItemCategory> DeleteAsync(int id)
         {
+            var transaction = await _db.Database.BeginTransactionAsync();
             try
             {
                 var requst = await _db.ItemCategories
@@ -66,17 +70,20 @@ namespace OnlineStoreAPI.DAL.Repositories
                 _db.ItemPropertis.RemoveRange(requst.ItemProperty);
 
                 await _db.SaveChangesAsync();
+                await transaction.CommitAsync();
                 return result.Entity;
             }
             catch (Exception ex)
             {
                 _logger.LogCritical(ex, $"Error when delete ItemCategory {id}");
+                await transaction.RollbackAsync();
                 throw ex;
             }
         }
 
         public async Task<ItemCategory> DeletePropertyAsync(ItemCategory data)
         {
+            var transaction = await _db.Database.BeginTransactionAsync();
             try
             {
                 var result = await _db.ItemCategories
@@ -88,17 +95,20 @@ namespace OnlineStoreAPI.DAL.Repositories
                 _db.Entry(result).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
 
+                await transaction.CommitAsync();
                 return result;
             }
             catch (Exception ex)
             {
                 _logger.LogCritical(ex, $"Error when delete ItemCategory from item {data.Id}");
+                await transaction.RollbackAsync();
                 throw ex;
             }
         }
 
         public async Task<ItemCategory> UpdatePropertyAsync(ItemCategory data)
         {
+            var transaction = await _db.Database.BeginTransactionAsync();
             try
             {
                 var result = await _db.ItemCategories
@@ -115,11 +125,13 @@ namespace OnlineStoreAPI.DAL.Repositories
                 _db.Entry(result).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
 
+                await transaction.CommitAsync();
                 return result;
             }
             catch (Exception ex)
             {
                 _logger.LogCritical(ex, $"Error when delete ItemCategory to item {data.Id}");
+                await transaction.RollbackAsync();
                 throw ex;
             }
         }
