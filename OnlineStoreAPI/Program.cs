@@ -21,7 +21,7 @@ builder.Services.AddScoped<IItemCategoryRepository, ItemCategoryRepository>();
 builder.Services.AddScoped<IRepository<Company>, CompanyRepository>();
 builder.Services.AddScoped<IItemRepositories, ItemRepository>();
 
-//AutoMapperProfiles
+// AutoMapperProfiles
 builder.Services.AddAutoMapper(typeof(CategoryProfile), typeof(ItemCategoryProfile), typeof(CompanyProfile));
 
 var connection = builder.Configuration.GetSection("DB").Value;
@@ -31,6 +31,12 @@ builder.Services.AddControllersWithViews()
     .AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
+
+// Redis casher
+builder.Services.AddStackExchangeRedisCache(options => {
+    options.Configuration = builder.Configuration.GetSection("Redis:Configuration").Value;
+    options.InstanceName = builder.Configuration.GetSection("Redis:InstanceName").Value;
+});
 
 builder.Services.AddControllers();
 
