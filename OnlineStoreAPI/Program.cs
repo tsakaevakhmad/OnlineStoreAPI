@@ -5,6 +5,7 @@ using OnlineStoreAPI.BLL.Services;
 using OnlineStoreAPI.DAL.Contexts;
 using OnlineStoreAPI.DAL.Interfaces;
 using OnlineStoreAPI.DAL.Repositories;
+using OnlineStoreAPI.DAL.RepositoryServices;
 using OnlineStoreAPI.Domain.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,9 @@ builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
 builder.Services.AddScoped<IItemCategoryRepository, ItemCategoryRepository>();
 builder.Services.AddScoped<IRepository<Company>, CompanyRepository>();
 builder.Services.AddScoped<IItemRepositories, ItemRepository>();
+
+//Cache service
+builder.Services.AddScoped<IRepositoryCacheServices, RepositoryCacheServices>();
 
 // AutoMapperProfiles
 builder.Services.AddAutoMapper(typeof(CategoryProfile), typeof(ItemCategoryProfile), typeof(CompanyProfile));
