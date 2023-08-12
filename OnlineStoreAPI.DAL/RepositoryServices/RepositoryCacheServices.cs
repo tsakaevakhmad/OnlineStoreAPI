@@ -22,15 +22,15 @@ namespace OnlineStoreAPI.DAL.RepositoryServices
             return true;
         }
 
-        public async Task<bool> OnCreateAsync<T>(string key, T value, int minutes)
+        public async Task<bool> OnCreateAsync<T>(string listKey, T value, int minutes)
         {
             List<T> result = null;
-            var cacheResult = await _cache.GetStringAsync(key);
+            var cacheResult = await _cache.GetStringAsync(listKey);
             if (cacheResult != null)
             {
                 result = JsonSerializer.Deserialize<List<T>>(cacheResult);
                 result.Add(value);
-                await _cache.SetStringAsync(key, JsonSerializer.Serialize(result), new DistributedCacheEntryOptions
+                await _cache.SetStringAsync(listKey, JsonSerializer.Serialize(result), new DistributedCacheEntryOptions
                 {
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(minutes)
                 });
@@ -40,7 +40,35 @@ namespace OnlineStoreAPI.DAL.RepositoryServices
             return false;
         }
 
-        public async Task OnDeleteAsync(string key)
+        public async Task OnDeleteAsync<T>(string key, string listKey, int minutes, Func<T, bool> predicate)
+        {
+            var cacheResult = await _cache.GetStringAsync(listKey);
+            if (cacheResult != null)
+            {
+                var resultList = JsonSerializer.Deserialize<List<T>>(cacheResult);
+                var itemToDelete = resultList.FirstOrDefault(item => predicate(item));
+
+                if (itemToDelete != null)
+                {
+                    resultList.Remove(itemToDelete);
+
+                    await _cache.SetStringAsync(listKey, JsonSerializer.Serialize(resultList), new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(minutes)
+                    });
+                }
+            }
+
+            await _cache.RemoveAsync(key);
+        }
+
+        public async Task OnDeleteAsync<T>(string key, string listKey)
+        {
+            await _cache.RemoveAsync(listKey);
+            await _cache.RemoveAsync(key);
+        }
+
+        public async Task DeleteAsync(string key)
         {
             await _cache.RemoveAsync(key);
         }

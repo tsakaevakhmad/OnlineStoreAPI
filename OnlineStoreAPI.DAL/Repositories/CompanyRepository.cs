@@ -42,7 +42,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             {
                 var result = _db.Companies.Remove(await _db.Companies.FindAsync(id));
                 await _db.SaveChangesAsync();
-                await _cacheServices.OnDeleteAsync(id.ToString());
+                await _cacheServices.OnDeleteAsync<Company>(id.ToString(), "companies", 1, x => x.Id == id);
                 return result.Entity;
             }
             catch (Exception ex)
@@ -100,7 +100,7 @@ namespace OnlineStoreAPI.DAL.Repositories
                 var entity = _db.Entry<Company>(data);
                 entity.State = EntityState.Modified;
                 await _db.SaveChangesAsync();
-                await _cacheServices.OnDeleteAsync(data.Id.ToString());
+                await _cacheServices.DeleteAsync(data.Id.ToString());
                 return entity.Entity;
             }
             catch (Exception ex)
