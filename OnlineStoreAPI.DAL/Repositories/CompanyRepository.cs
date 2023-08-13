@@ -26,7 +26,6 @@ namespace OnlineStoreAPI.DAL.Repositories
                 var result = await _db.Companies.AddAsync(data);
                 await _db.SaveChangesAsync();
                 await _cacheServices.OnCreateAsync<Company>("companies", result.Entity, 1);
-
                 return result.Entity;
             }
             catch (Exception ex)

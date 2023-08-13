@@ -24,11 +24,10 @@ namespace OnlineStoreAPI.DAL.RepositoryServices
 
         public async Task<bool> OnCreateAsync<T>(string listKey, T value, int minutes)
         {
-            List<T> result = null;
             var cacheResult = await _cache.GetStringAsync(listKey);
             if (cacheResult != null)
             {
-                result = JsonSerializer.Deserialize<List<T>>(cacheResult);
+                var result = JsonSerializer.Deserialize<List<T>>(cacheResult);
                 result.Add(value);
                 await _cache.SetStringAsync(listKey, JsonSerializer.Serialize(result), new DistributedCacheEntryOptions
                 {
