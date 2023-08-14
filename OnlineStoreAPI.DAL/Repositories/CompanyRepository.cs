@@ -99,7 +99,7 @@ namespace OnlineStoreAPI.DAL.Repositories
                 var entity = _db.Entry<Company>(data);
                 entity.State = EntityState.Modified;
                 await _db.SaveChangesAsync();
-                await _cacheServices.DeleteAsync(data.Id.ToString());
+                await _cacheServices.OnUpdateAsync<Company>(data.Id.ToString(), "companies", entity.Entity, 1, x => x.Id == data.Id);
                 return entity.Entity;
             }
             catch (Exception ex)

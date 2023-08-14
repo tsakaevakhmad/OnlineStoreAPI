@@ -33,7 +33,6 @@ namespace OnlineStoreAPI.DAL.RepositoryServices
                 {
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(minutes)
                 });
-
                 return true;
             }
             return false;
@@ -57,7 +56,6 @@ namespace OnlineStoreAPI.DAL.RepositoryServices
                     });
                 }
             }
-
             await _cache.RemoveAsync(key);
         }
 
@@ -83,9 +81,29 @@ namespace OnlineStoreAPI.DAL.RepositoryServices
             return result;
         }
 
-        public Task<T> OnUpdateAsync<T>(string key, T value, int minutes)
+        public async Task<T> OnUpdateAsync<T>(string key, string listKey, T value, int minutes, Func<T, bool> predicate)
         {
-            throw new NotImplementedException();
+            var cacheResult = await _cache.GetStringAsync(listKey);
+            if (cacheResult != null)
+            {
+                var resultList = JsonSerializer.Deserialize<List<T>>(cacheResult);
+                var itemToUpdate = resultList.FirstOrDefault(item => predicate(item));
+                if (itemToUpdate != null)
+                {
+                    resultList.Remove(itemToUpdate);
+                    itemToUpdate = value;
+                    resultList.Add(itemToUpdate);
+                    await _cache.SetStringAsync(listKey, JsonSerializer.Serialize(resultList), new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(minutes)
+                    });
+                }
+            }
+            await _cache.SetStringAsync(key, JsonSerializer.Serialize(value), new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(minutes)
+            });
+            return value;
         }
     }
 }
