@@ -100,7 +100,7 @@ namespace OnlineStoreAPI.DAL.Repositories
                 var entity = _db.Entry<Category>(data);
                 entity.State = EntityState.Modified;
                 await _db.SaveChangesAsync();
-                await _cacheServices.OnDeleteAsync<Category>(data.Id.ToString(), "categories", 1, x => x.Id == data.Id);
+                await _cacheServices.OnUpdateAsync<Category>(data.Id.ToString(), "categories", entity.Entity, 1, x => x.Id == data.Id);
                 return entity.Entity;
             }
             catch (Exception ex)
