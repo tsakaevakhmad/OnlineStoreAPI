@@ -33,7 +33,7 @@ namespace OnlineStoreAPI.DAL.Repositories
                 await _db.ItemProperyValues.AddRangeAsync(data.ItemProperyValue);
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
-                await _cacheServices.OnCreateAsync("items", result.Entity, 1);
+                await _cacheServices.OnCreateAsync("items", result.Entity, 15);
                 return result.Entity;
             }
             catch(Exception ex)
@@ -65,7 +65,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             {
                 var result = _db.Items.Remove(await _db.Items.FindAsync(id));
                 await _db.SaveChangesAsync();
-                await _cacheServices.OnDeleteAsync<Item>(id.ToString(), "items", 1, x => x.Id == id);
+                await _cacheServices.OnDeleteAsync<Item>(id.ToString(), "items", 15, x => x.Id == id);
                 return result.Entity;
             }
             catch(Exception ex)
@@ -90,7 +90,7 @@ namespace OnlineStoreAPI.DAL.Repositories
                     .ThenInclude(x => x.ItemProperty)
                     .AsNoTracking()
                     .FirstOrDefaultAsync(x => x.Id == id);
-                    await _cacheServices.AddAsync(id.ToString(), item, 1);
+                    await _cacheServices.AddAsync(id.ToString(), item, 15);
                 }
                 return item;
             }
@@ -109,7 +109,7 @@ namespace OnlineStoreAPI.DAL.Repositories
                 if (items == null)
                 {
                     items = await _db.Items.ToListAsync();
-                    await _cacheServices.AddAsync("items", items, 1);
+                    await _cacheServices.AddAsync("items", items, 15);
                 }
                 return items;
             }
@@ -138,7 +138,7 @@ namespace OnlineStoreAPI.DAL.Repositories
 
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
-                await _cacheServices.OnUpdateAsync(data.Id.ToString(), "items", item.Entity, 1, x => x.Id == data.Id);
+                await _cacheServices.OnUpdateAsync(data.Id.ToString(), "items", item.Entity, 15, x => x.Id == data.Id);
                 await _cacheServices.DeleteAsync(data.Id.ToString());
                 return item.Entity;
             }
@@ -178,7 +178,8 @@ namespace OnlineStoreAPI.DAL.Repositories
                     .AsNoTracking().ToListAsync();
                     await _cacheServices.AddAsync("items", items, 15);
                 }
-                return items.Where(GetItemExpression(searchArguments)).Where(GetItemPropertyExpression(searchArguments.Property));               
+                return items.Where(GetItemExpression(searchArguments))
+                    .Where(GetItemPropertyExpression(searchArguments.Property));               
             }
             catch (Exception ex)
             {
