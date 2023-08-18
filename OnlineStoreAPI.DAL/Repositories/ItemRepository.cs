@@ -108,7 +108,13 @@ namespace OnlineStoreAPI.DAL.Repositories
                 var items = await _cacheServices.OnGetAsync<IEnumerable<Item>>("items");
                 if (items == null)
                 {
-                    items = await _db.Items.ToListAsync();
+                    items = await _db.Items
+                        .Include(x => x.ItemPriceHistories)
+                        .Include(x => x.ItemCategory)
+                        .Include(x => x.Company)
+                        .Include(x => x.ItemProperyValue)
+                        .ThenInclude(x => x.ItemProperty)
+                        .AsNoTracking().ToListAsync();
                     await _cacheServices.AddAsync("items", items, 15);
                 }
                 return items;
@@ -178,8 +184,8 @@ namespace OnlineStoreAPI.DAL.Repositories
                     .AsNoTracking().ToListAsync();
                     await _cacheServices.AddAsync("items", items, 15);
                 }
-                return items.Where(GetItemExpression(searchArguments))
-                    .Where(GetItemPropertyExpression(searchArguments.Property));               
+                return (items.Where(GetItemExpression(searchArguments)))
+                    .Where(GetItemPropertyExpression(searchArguments.Property)).ToList(); ; 
             }
             catch (Exception ex)
             {
@@ -228,7 +234,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             return filter;
         }
 
-        private ExpressionStarter<Item> GetItemPropertyExpression(List<ItemPrpertySearchList> itemProperties)
+        private ExpressionStarter<Item> GetItemPropertyExpression(List<ItemPropertySearchList> itemProperties)
         {
             var filter = PredicateBuilder.New<Item>(true);
 

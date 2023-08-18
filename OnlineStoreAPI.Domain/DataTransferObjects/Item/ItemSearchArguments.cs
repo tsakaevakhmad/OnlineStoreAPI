@@ -7,6 +7,6 @@
         public Decimal? ToPrice { get; set; }
         public string? ItemName { get; set; } = null;
         public string? CompanyName { get; set; } = null;
-        public List<ItemPrpertySearchList>? Property { get; set; } = new List<ItemPrpertySearchList>();
+        public List<ItemPropertySearchList>? Property { get; set; } = new List<ItemPropertySearchList>();
     }
 }
