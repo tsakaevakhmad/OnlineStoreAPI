@@ -69,7 +69,7 @@ namespace OnlineStoreAPI.BLL.Services
             try
             {
                 result = _mapper.Map<IEnumerable<CompanyShortDTO>>(await _repository.GetAsync());
-                return new ResponseDTO<IEnumerable<CompanyShortDTO>>(_sortAndFilter.SortBy(result, "name"));
+                return new ResponseDTO<IEnumerable<CompanyShortDTO>>(_sortAndFilter.SortBy(result, "name", "asc"));
             }
             catch (Exception ex)
             {

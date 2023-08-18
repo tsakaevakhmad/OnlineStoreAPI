@@ -55,8 +55,7 @@ namespace OnlineStoreAPI.DAL.Repositories
         {
             try
             {
-                Company company = new Company();
-                company = await _cacheServices.OnGetAsync<Company>(id.ToString());
+                var company = await _cacheServices.OnGetAsync<Company>(id.ToString());
                 if (company == null)
                 {
                     company = await _db.Companies.FindAsync(id);
@@ -82,7 +81,6 @@ namespace OnlineStoreAPI.DAL.Repositories
                     companies = await _db.Companies.ToListAsync();
                     await _cacheServices.AddAsync(nameof(companies), companies, 1);
                 }
-
                 return companies;
             }
             catch (Exception ex)
