@@ -124,10 +124,10 @@ namespace OnlineStoreAPI.DAL.Repositories
                 .Include(x => x.ItemProperty)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == data.Id);
-
+                //Нужно пофиксить
                 foreach (var property in data.ItemProperty)
                 {
-                    int index = result.ItemProperty.IndexOf(result.ItemProperty.Where(x => x.Id == property.Id).FirstOrDefault());
+                    int index = result.ItemProperty.IndexOf(result.ItemProperty.FirstOrDefault(x => x.Id == property.Id));
                     result.ItemProperty[index] = property;
                 }
                 var entity = _db.Entry<ItemCategory>(result);
