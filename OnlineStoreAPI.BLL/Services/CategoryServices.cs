@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using OnlineStoreAPI.BLL.Interfaces;
+using OnlineStoreAPI.BLL.Interfaces.Utilities;
 using OnlineStoreAPI.DAL.Interfaces;
 using OnlineStoreAPI.Domain.DataTransferObjects;
 using OnlineStoreAPI.Domain.DataTransferObjects.Category;
@@ -11,11 +12,13 @@ namespace OnlineStoreAPI.BLL.Services
     {
         private readonly IMapper _mapper;
         private readonly IRepository<Category> _repository;
+        private readonly ISortAndFilterManager _sortAndFilter;
 
-        public CategoryServices(IMapper mapper, IRepository<Category> repository)
+        public CategoryServices(IMapper mapper, IRepository<Category> repository, ISortAndFilterManager sortAndFilter)
         {
             _mapper = mapper;
             _repository = repository;
+            _sortAndFilter = sortAndFilter;
         }
 
         public async Task<ResponseDTO<CategoryShortDTO>> CreateAsync(CategoryShortDTO data)
@@ -66,7 +69,7 @@ namespace OnlineStoreAPI.BLL.Services
             try
             {
                 result = _mapper.Map<IEnumerable<CategoryShortDTO>>(await _repository.GetAsync());
-                return new ResponseDTO<IEnumerable<CategoryShortDTO>>(result);
+                return new ResponseDTO<IEnumerable<CategoryShortDTO>>(_sortAndFilter.SortBy(result, "name", "asc"));
             }
             catch (Exception ex)
             {
