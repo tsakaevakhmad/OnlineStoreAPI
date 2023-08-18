@@ -5,6 +5,7 @@ using OnlineStoreAPI.DAL.Contexts;
 using OnlineStoreAPI.DAL.Interfaces;
 using OnlineStoreAPI.Domain.DataTransferObjects.Item;
 using OnlineStoreAPI.Domain.Entities;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 
 namespace OnlineStoreAPI.DAL.Repositories
@@ -13,11 +14,13 @@ namespace OnlineStoreAPI.DAL.Repositories
     {
         private readonly AppDbContext _db;
         private readonly ILogger<ItemRepository> _logger;
+        private readonly IRepositoryCacheServices _cacheServices;
 
-        public ItemRepository(AppDbContext db, ILogger<ItemRepository> logger) 
+        public ItemRepository(AppDbContext db, ILogger<ItemRepository> logger, IRepositoryCacheServices cacheServices) 
         { 
             _db = db; 
-            _logger = logger;    
+            _logger = logger;
+            _cacheServices = cacheServices;
         }
 
         public async Task<Item> CreateAsync(Item data)
@@ -30,6 +33,7 @@ namespace OnlineStoreAPI.DAL.Repositories
                 await _db.ItemProperyValues.AddRangeAsync(data.ItemProperyValue);
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
+                await _cacheServices.OnCreateAsync("items", result.Entity, 1);
                 return result.Entity;
             }
             catch(Exception ex)
@@ -61,6 +65,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             {
                 var result = _db.Items.Remove(await _db.Items.FindAsync(id));
                 await _db.SaveChangesAsync();
+                await _cacheServices.OnDeleteAsync<Item>(id.ToString(), "items", 1, x => x.Id == id);
                 return result.Entity;
             }
             catch(Exception ex)
@@ -74,7 +79,10 @@ namespace OnlineStoreAPI.DAL.Repositories
         {
             try
             {
-                return await _db.Items
+                var item = await _cacheServices.OnGetAsync<Item>(id.ToString());
+                if (item == null)
+                {
+                    item = await _db.Items
                     .Include(x => x.ItemPriceHistories)
                     .Include(x => x.ItemCategory)
                     .Include(x => x.Company)
@@ -82,6 +90,9 @@ namespace OnlineStoreAPI.DAL.Repositories
                     .ThenInclude(x => x.ItemProperty)
                     .AsNoTracking()
                     .FirstOrDefaultAsync(x => x.Id == id);
+                    await _cacheServices.AddAsync(id.ToString(), item, 1);
+                }
+                return item;
             }
             catch (Exception ex)
             {
@@ -94,7 +105,13 @@ namespace OnlineStoreAPI.DAL.Repositories
         {
             try
             {
-                return await _db.Items.ToListAsync();
+                var items = await _cacheServices.OnGetAsync<IEnumerable<Item>>("items");
+                if (items == null)
+                {
+                    items = await _db.Items.ToListAsync();
+                    await _cacheServices.AddAsync("items", items, 1);
+                }
+                return items;
             }
             catch (Exception ex)
             {
@@ -121,6 +138,8 @@ namespace OnlineStoreAPI.DAL.Repositories
 
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
+                await _cacheServices.OnUpdateAsync(data.Id.ToString(), "items", item.Entity, 1, x => x.Id == data.Id);
+                await _cacheServices.DeleteAsync(data.Id.ToString());
                 return item.Entity;
             }
             catch (Exception ex)
@@ -147,16 +166,19 @@ namespace OnlineStoreAPI.DAL.Repositories
         {
             try
             {
-                return (await _db.Items
+                var items = await _cacheServices.OnGetAsync<IEnumerable<Item>>("items");
+                if (items == null)
+                {
+                    items = await _db.Items
                     .Include(x => x.ItemPriceHistories)
                     .Include(x => x.ItemCategory)
                     .Include(x => x.Company)
                     .Include(x => x.ItemProperyValue)
                     .ThenInclude(x => x.ItemProperty)
-                    .AsNoTracking()
-                    .Where(GetItemExpression(searchArguments))
-                    .ToListAsync())
-                    .Where(GetItemPropertyExpression(searchArguments.Property));
+                    .AsNoTracking().ToListAsync();
+                    await _cacheServices.AddAsync("items", items, 15);
+                }
+                return items.Where(GetItemExpression(searchArguments)).Where(GetItemPropertyExpression(searchArguments.Property));               
             }
             catch (Exception ex)
             {
