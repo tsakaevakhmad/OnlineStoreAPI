@@ -129,9 +129,9 @@ namespace OnlineStoreAPI.DAL.Repositories
                 {
                     int index = result.ItemProperty.IndexOf(result.ItemProperty.FirstOrDefault(x => x.Id == property.Id));
                     result.ItemProperty[index] = property;
+                    var itemPropertyEntity = _db.Entry<ItemProperty>(result.ItemProperty[index]);
+                    itemPropertyEntity.State = EntityState.Modified;
                 }
-                var entity = _db.Entry<ItemCategory>(result);
-                entity.State = EntityState.Modified;
 
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();

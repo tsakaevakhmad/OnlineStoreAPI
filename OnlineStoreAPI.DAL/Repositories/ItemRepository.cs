@@ -244,10 +244,10 @@ namespace OnlineStoreAPI.DAL.Repositories
                 .And(item => item.ItemProperyValue
                 .Any(prop => itemProperties
                 .Any(x => (prop.ItemPropertyId == x.ItemPropertyId)
-                    && (prop.ItemProperty.ValueType == "int" && Convert.ToInt32(prop.Value) >= Convert.ToInt32(x.ValueFrom) && Convert.ToInt32(prop.Value) <= Convert.ToInt32(x.ValueTo)
-                        || prop.ItemProperty.ValueType == "bool" && Convert.ToBoolean(prop.Value) == Convert.ToBoolean(x.ValueFrom)
-                        || prop.ItemProperty.ValueType == "double" && Convert.ToDouble(prop.Value) >= Convert.ToDouble(x.ValueFrom) && Convert.ToDouble(prop.Value) <= Convert.ToDouble(x.ValueTo)
-                        || prop.Value.Contains(x.ValueFrom)))));
+                    && (prop.ItemProperty.ValueType == "int" ? Convert.ToInt32(prop.Value) >= Convert.ToInt32(x.ValueFrom) && Convert.ToInt32(prop.Value) <= Convert.ToInt32(x.ValueTo)
+                    : prop.ItemProperty.ValueType == "bool" ? Convert.ToBoolean(prop.Value) == Convert.ToBoolean(x.ValueFrom)
+                    : prop.ItemProperty.ValueType == "double" ? Convert.ToDouble(prop.Value) >= Convert.ToDouble(x.ValueFrom) && Convert.ToDouble(prop.Value) <= Convert.ToDouble(x.ValueTo)
+                    : prop.Value.Contains(x.ValueFrom)))));
             }
 
             return filter;
