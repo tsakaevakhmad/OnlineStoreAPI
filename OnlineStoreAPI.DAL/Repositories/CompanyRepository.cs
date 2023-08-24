@@ -10,11 +10,13 @@ namespace OnlineStoreAPI.DAL.Repositories
     {
         private readonly AppDbContext _db;
         private readonly ILogger<CompanyRepository> _logger;
+        private readonly IRepositoryCacheServices _cacheServices;
 
-        public CompanyRepository(AppDbContext db, ILogger<CompanyRepository> logger)
+        public CompanyRepository(AppDbContext db, ILogger<CompanyRepository> logger, IRepositoryCacheServices cacheServices)
         {
             _db = db;
             _logger = logger;
+            _cacheServices = cacheServices;
         }
 
         public async Task<Company> CreateAsync(Company data)
@@ -23,9 +25,10 @@ namespace OnlineStoreAPI.DAL.Repositories
             {
                 var result = await _db.Companies.AddAsync(data);
                 await _db.SaveChangesAsync();
+                await _cacheServices.OnCreateAsync<Company>("companies", result.Entity, 1);
                 return result.Entity;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogCritical(ex, $"Error when try create company {data.Name}");
                 throw ex;
@@ -38,6 +41,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             {
                 var result = _db.Companies.Remove(await _db.Companies.FindAsync(id));
                 await _db.SaveChangesAsync();
+                await _cacheServices.OnDeleteAsync<Company>(id.ToString(), "companies", 1, x => x.Id == id);
                 return result.Entity;
             }
             catch (Exception ex)
@@ -51,7 +55,13 @@ namespace OnlineStoreAPI.DAL.Repositories
         {
             try
             {
-                return await _db.Companies.FindAsync(id);
+                var company = await _cacheServices.OnGetAsync<Company>(id.ToString());
+                if (company == null)
+                {
+                    company = await _db.Companies.FindAsync(id);
+                    await _cacheServices.AddAsync(id.ToString(), company, 1);
+                }
+                return company;
             }
             catch (Exception ex)
             {
@@ -64,7 +74,14 @@ namespace OnlineStoreAPI.DAL.Repositories
         {
             try
             {
-                return await _db.Companies.ToListAsync();
+                IEnumerable<Company>? companies = null;
+                companies = await _cacheServices.OnGetAsync<List<Company>>(nameof(companies));
+                if (companies == null)
+                {
+                    companies = await _db.Companies.ToListAsync();
+                    await _cacheServices.AddAsync(nameof(companies), companies, 1);
+                }
+                return companies;
             }
             catch (Exception ex)
             {
@@ -80,6 +97,7 @@ namespace OnlineStoreAPI.DAL.Repositories
                 var entity = _db.Entry<Company>(data);
                 entity.State = EntityState.Modified;
                 await _db.SaveChangesAsync();
+                await _cacheServices.OnUpdateAsync<Company>(data.Id.ToString(), "companies", entity.Entity, 1, x => x.Id == data.Id);
                 return entity.Entity;
             }
             catch (Exception ex)

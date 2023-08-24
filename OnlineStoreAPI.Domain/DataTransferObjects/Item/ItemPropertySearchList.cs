@@ -1,6 +1,6 @@
 ﻿namespace OnlineStoreAPI.Domain.DataTransferObjects.Item
 {
-    public class ItemPrpertySearchList
+    public class ItemPropertySearchList
     {
         public int ItemPropertyId { get; set; }
         public string ValueFrom { get; set; }

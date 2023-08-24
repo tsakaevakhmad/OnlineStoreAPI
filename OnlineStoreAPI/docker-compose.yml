@@ -1,0 +1,24 @@
+version: '3.5'
+
+networks:
+  osa_network:
+    name: osa_network
+
+services: 
+  database:
+    image: postgres:latest
+    container_name: DB
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - osa_network
+
+  redis:
+    image: redis:latest
+    container_name: osa_cache
+    ports:
+      - "6379:6379"
+    networks:
+      - osa_network

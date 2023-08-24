@@ -6,5 +6,10 @@
         public string Name { get; set; }
 
         public List<Item>? Items { get; set;}
+
+        public static implicit operator Company?(ItemCategory? v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

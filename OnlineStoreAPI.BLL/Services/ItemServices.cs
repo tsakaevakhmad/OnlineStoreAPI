@@ -1,14 +1,11 @@
 ﻿using AutoMapper;
-using LinqKit;
-using Microsoft.Extensions.Primitives;
 using OnlineStoreAPI.BLL.Interfaces;
+using OnlineStoreAPI.BLL.Interfaces.Utilities;
 using OnlineStoreAPI.DAL.Interfaces;
 using OnlineStoreAPI.Domain.DataTransferObjects;
 using OnlineStoreAPI.Domain.DataTransferObjects.Item;
 using OnlineStoreAPI.Domain.Entities;
 using System.Reflection;
-using System.Text;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace OnlineStoreAPI.BLL.Services
 {
@@ -16,11 +13,13 @@ namespace OnlineStoreAPI.BLL.Services
     {
         private readonly IItemRepositories _repository;
         private readonly IMapper _mapper;
+        private readonly ISortAndFilterManager _sortAndFilter;
 
-        public ItemServices(IMapper mapper, IItemRepositories repository) 
+        public ItemServices(IMapper mapper, IItemRepositories repository, ISortAndFilterManager sortAndFilter) 
         {
             _repository = repository;
             _mapper = mapper;
+            _sortAndFilter = sortAndFilter;
         }
 
         public async Task<ResponseDTO<ItemDTO>> CreateAsync(ItemAddDTO data)
@@ -85,7 +84,7 @@ namespace OnlineStoreAPI.BLL.Services
             try
             {
                 result = _mapper.Map<IEnumerable<ItemShortDTO>>(await _repository.GetAsync());             
-                return new ResponseDTO<IEnumerable<ItemShortDTO>>(SortBy(ref result, sortBy, orderType));
+                return new ResponseDTO<IEnumerable<ItemShortDTO>>(_sortAndFilter.SortBy(result, sortBy, orderType));
             }
             catch (Exception ex)
             {
@@ -113,7 +112,7 @@ namespace OnlineStoreAPI.BLL.Services
             try
             {
                 result = _mapper.Map<IEnumerable<ItemShortDTO>>(await _repository.GetSearchArgumentsAsync(searchArguments));
-                return new ResponseDTO<IEnumerable<ItemShortDTO>>(SortBy(ref result, sortBy, orderType));
+                return new ResponseDTO<IEnumerable<ItemShortDTO>>(_sortAndFilter.SortBy(result, sortBy, orderType));
             }
             catch (Exception ex)
             {
@@ -147,18 +146,6 @@ namespace OnlineStoreAPI.BLL.Services
             {
                 return new ResponseDTO<PropertyValuesDistinct>(result) { Message = ex.Message };
             }
-        }
-
-        private IEnumerable<ItemShortDTO> SortBy(ref IEnumerable<ItemShortDTO> result, string sortBy, string orderType = "DESC")
-        {
-            sortBy = new StringBuilder(sortBy).Remove(0, 1).Insert(0, sortBy[0].ToString().ToUpper()).ToString();
-            if (!string.IsNullOrEmpty(sortBy))
-            {
-                if(orderType.ToUpper() == "ASC")
-                    return result.OrderBy(x => x.GetType().GetProperty(sortBy).GetValue(x));
-                return result.OrderByDescending(x => x.GetType().GetProperty(sortBy).GetValue(x));
-            }
-            return result;
         }
     }
 }

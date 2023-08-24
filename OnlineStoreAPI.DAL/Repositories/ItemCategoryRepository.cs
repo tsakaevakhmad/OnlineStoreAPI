@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using OnlineStoreAPI.DAL.Contexts;
 using OnlineStoreAPI.DAL.Interfaces;
-using OnlineStoreAPI.Domain.DataTransferObjects.Item;
 using OnlineStoreAPI.Domain.Entities;
 
 namespace OnlineStoreAPI.DAL.Repositories
@@ -11,11 +10,13 @@ namespace OnlineStoreAPI.DAL.Repositories
     {
         private readonly AppDbContext _db;
         private readonly ILogger<ItemCategoryRepository> _logger;
+        private readonly IRepositoryCacheServices _cacheServices;
 
-        public ItemCategoryRepository(AppDbContext db, ILogger<ItemCategoryRepository> logger)
+        public ItemCategoryRepository(AppDbContext db, ILogger<ItemCategoryRepository> logger, IRepositoryCacheServices cacheServices)
         {
             _db = db;
             _logger = logger;
+            _cacheServices = cacheServices;
         }
 
         public async Task<ItemCategory> AddPropertyAsync(ItemCategory data)
@@ -30,6 +31,9 @@ namespace OnlineStoreAPI.DAL.Repositories
                 _db.ItemCategories.Update(result);
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
+                await _cacheServices.DeleteAsync(data.Id.ToString());
+                await _cacheServices.DeleteAsync("items");
+                await _cacheServices.DeleteAsync("itemcategories");
                 return result;
             }
             catch (Exception ex)
@@ -46,6 +50,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             {
                 var result = await _db.ItemCategories.AddAsync(data);
                 await _db.SaveChangesAsync();
+                await _cacheServices.OnCreateAsync("itemcategories", result, 1);
                 return result.Entity;
             }
             catch (Exception ex)
@@ -71,6 +76,9 @@ namespace OnlineStoreAPI.DAL.Repositories
 
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
+
+                await _cacheServices.OnDeleteAsync<ItemCategory>(id.ToString(), "itemcategories", 1, x => x.Id == id);
+                await _cacheServices.DeleteAsync("items");
                 return result.Entity;
             }
             catch (Exception ex)
@@ -94,8 +102,9 @@ namespace OnlineStoreAPI.DAL.Repositories
 
                 _db.Entry(result).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
-
                 await transaction.CommitAsync();
+                await _cacheServices.OnUpdateAsync<ItemCategory>(data.Id.ToString(), "itemcategories", result, 1, x => x.Id == data.Id);
+                await _cacheServices.DeleteAsync("items");
                 return result;
             }
             catch (Exception ex)
@@ -115,17 +124,20 @@ namespace OnlineStoreAPI.DAL.Repositories
                 .Include(x => x.ItemProperty)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == data.Id);
-
+                //Нужно пофиксить
                 foreach (var property in data.ItemProperty)
                 {
-                    int index = result.ItemProperty.IndexOf(result.ItemProperty.Where(x => x.Id == property.Id).FirstOrDefault());
+                    int index = result.ItemProperty.IndexOf(result.ItemProperty.FirstOrDefault(x => x.Id == property.Id));
                     result.ItemProperty[index] = property;
+                    var itemPropertyEntity = _db.Entry<ItemProperty>(result.ItemProperty[index]);
+                    itemPropertyEntity.State = EntityState.Modified;
                 }
 
-                _db.Entry(result).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
-
                 await transaction.CommitAsync();
+
+                await _cacheServices.OnUpdateAsync<ItemCategory>(data.Id.ToString(), "itemcategories", result, 1, x => x.Id == data.Id);
+                await _cacheServices.DeleteAsync("items");
                 return result;
             }
             catch (Exception ex)
@@ -140,11 +152,17 @@ namespace OnlineStoreAPI.DAL.Repositories
         {
             try
             {
-                return await _db.ItemCategories
+                var itemCategory = await _cacheServices.OnGetAsync<ItemCategory>(id.ToString());
+                if (itemCategory == null)
+                {
+                    itemCategory = await _db.ItemCategories
                     .Include(x => x.Category)
                     .Include(x => x.ItemProperty)
                     .AsNoTracking()
                     .FirstOrDefaultAsync(x => x.Id == id);
+                    await _cacheServices.AddAsync(id.ToString(), itemCategory, 1);
+                }
+                return itemCategory;
             }
             catch (Exception ex)
             {
@@ -157,7 +175,13 @@ namespace OnlineStoreAPI.DAL.Repositories
         {
             try
             {
-                return await _db.ItemCategories.Include(x => x.Category).AsNoTracking().ToListAsync();
+                var itemCategories = await _cacheServices.OnGetAsync<IEnumerable<ItemCategory>>("itemcategories");
+                if (itemCategories == null)
+                {
+                    itemCategories = await _db.ItemCategories.Include(x => x.Category).AsNoTracking().ToListAsync();
+                    await _cacheServices.AddAsync("itemcategories", itemCategories, 1);
+                }
+                return itemCategories;
             }
             catch (Exception ex)
             {
@@ -173,6 +197,9 @@ namespace OnlineStoreAPI.DAL.Repositories
                 var entity = _db.Entry<ItemCategory>(data);
                 entity.State = EntityState.Modified;
                 await _db.SaveChangesAsync();
+                await _cacheServices.OnUpdateAsync<ItemCategory>(data.Id.ToString(), "itemcategories", entity.Entity, 1, x => x.Id == data.Id);
+                await _cacheServices.DeleteAsync(data.Id.ToString());
+                await _cacheServices.DeleteAsync("items");
                 return entity.Entity;
             }
             catch (Exception ex)
