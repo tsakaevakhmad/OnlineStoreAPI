@@ -19,16 +19,15 @@ namespace OnlineStoreAPI.DAL.RepositoryServices
             };
         }
 
-        public async Task<bool> AddAsync<T>(string key, T value, int minutes)
+        public async Task AddAsync<T>(string key, T value, int minutes)
         {
             await _cache.SetStringAsync(key, JsonSerializer.Serialize(value, _jsonOptions), new DistributedCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(minutes)
             });
-            return true;
         }
 
-        public async Task<bool> OnCreateAsync<T>(string listKey, T value, int minutes)
+        public async Task OnCreateAsync<T>(string listKey, T value, int minutes)
         {
             var cacheResult = await _cache.GetStringAsync(listKey);
             if (cacheResult != null)
@@ -39,9 +38,7 @@ namespace OnlineStoreAPI.DAL.RepositoryServices
                 {
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(minutes)
                 });
-                return true;
             }
-            return false;
         }
 
         public async Task OnDeleteAsync<T>(string key, string listKey, int minutes, Func<T, bool> predicate)
