@@ -212,24 +212,16 @@ namespace OnlineStoreAPI.DAL.Repositories
             var filter = PredicateBuilder.New<Item>(true);
 
             if (searchArguments.ItemCategoryId > 0)
-            {
                 filter = filter.And(item => item.ItemCategoryId == searchArguments.ItemCategoryId);
-            }
 
             if (!string.IsNullOrEmpty(searchArguments.ItemName))
-            {
                 filter = filter.And(item => item.Title.ToUpper().Contains(searchArguments.ItemName.ToUpper()));
-            }
 
             if (!string.IsNullOrEmpty(searchArguments.CompanyName))
-            {
                 filter = filter.And(item => item.Company.Name.ToUpper().Contains(searchArguments.CompanyName.ToUpper()));
-            }
 
             if (searchArguments.FromPrice > 0 | searchArguments.ToPrice > 0)
-            {
                 filter = filter.And(item => item.Price >= searchArguments.FromPrice & item.Price <= searchArguments.ToPrice);
-            }
 
             return filter;
         }
