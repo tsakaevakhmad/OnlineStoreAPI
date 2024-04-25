@@ -5,6 +5,18 @@ networks:
     name: osa_network
 
 services: 
+  backend:
+    image: ahmadck/osapi:latest
+    container_name: OSApi
+    ports:
+      - "5000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DB=Server=DB;Port=5432;Database=postgres;User Id=postgres;Password=postgres;
+      - FRONTHOST=http://localhost:3000
+    networks:
+      - osa_network
+
   database:
     image: postgres:latest
     container_name: DB

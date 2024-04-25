@@ -52,8 +52,19 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+var frontHost = builder.Configuration.GetSection("FrontHost").Get<string[]>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder => builder
+            .WithOrigins(frontHost)  //       
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials());
+});
 
+var app = builder.Build();
+app.UseCors("AllowSpecificOrigin");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
