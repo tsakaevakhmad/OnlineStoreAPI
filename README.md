@@ -1,13 +1,16 @@
 # OnlineStoreAPI
+#### This project is based on the "EAV" pattern. It is a platform where you can place goods of different categories and purposes. You just need to develop the "Client".
 
-## This is EAV online store API for everything
-
-### _`-_-`_ More information will be latter _`-_-`_
 <hr>
 
-# ITEM API
-## 1) Create
-### api/item/createitem | POST |
+## Request examples:
+
+<hr> 
+
+## ITEM API
+### 1) Create
+#### api/item/createitem | POST |
+
 ```json
 {
   "title": "GIGABYTE GeForce RTX4080 EAGLE OC 16GB",
@@ -116,9 +119,9 @@
 }
 ```
 
-# ITEM CATEGORY API
-## 1) Create
-### api/itemCategory/CreateItemCategory
+## ITEM CATEGORY API
+### 1) Create
+#### api/itemCategory/CreateItemCategory
 ```json
 {
   "id": 0,
