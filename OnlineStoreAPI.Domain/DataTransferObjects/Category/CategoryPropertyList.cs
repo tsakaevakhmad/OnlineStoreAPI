@@ -1,6 +1,6 @@
-﻿namespace OnlineStoreAPI.Domain.DataTransferObjects.ItemCategory
+﻿namespace OnlineStoreAPI.Domain.DataTransferObjects.Category
 {
-    public class ItemCategoryPropertyList
+    public class CategoryPropertyList
     {
         public int Id { get; set; }
         public string Name { get; set; }

@@ -7,7 +7,7 @@ using System;
 
 namespace OnlineStoreAPI.DAL.Repositories
 {
-    public class CategoryRepository : IRepository<Category>
+    public class CategoryRepository : ICategoryRepository
     {
         private readonly AppDbContext _db;
         private readonly ILogger<CategoryRepository> _logger;
@@ -59,7 +59,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogCritical(ex, $"Error when delete ItemCategory {id}");
+                _logger.LogCritical(ex, $"Error when delete Category {id}");
                 await transaction.RollbackAsync();
                 throw ex;
             }

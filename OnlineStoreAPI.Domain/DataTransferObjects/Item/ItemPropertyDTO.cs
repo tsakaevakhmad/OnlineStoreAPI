@@ -1,4 +1,4 @@
-﻿using OnlineStoreAPI.Domain.DataTransferObjects.ItemCategory;
+﻿using OnlineStoreAPI.Domain.DataTransferObjects.Category;
 
 namespace OnlineStoreAPI.Domain.DataTransferObjects.Item
 {
@@ -6,6 +6,6 @@ namespace OnlineStoreAPI.Domain.DataTransferObjects.Item
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public List<ItemCategoryDTO>? ItemCategories { get; set; }
+        public List<CategoryDTO>? ItemCategories { get; set; }
     }
 }

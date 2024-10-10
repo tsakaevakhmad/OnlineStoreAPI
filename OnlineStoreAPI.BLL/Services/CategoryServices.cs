@@ -11,83 +11,125 @@ namespace OnlineStoreAPI.BLL.Services
     public class CategoryServices : ICategoryServices
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<Category> _repository;
+        private readonly ICategoryRepository _repository;
         private readonly ISortAndFilterManager _sortAndFilter;
 
-        public CategoryServices(IMapper mapper, IRepository<Category> repository, ISortAndFilterManager sortAndFilter)
+        public CategoryServices(IMapper mapper, ICategoryRepository repository, ISortAndFilterManager sortAndFilter)
         {
             _mapper = mapper;
             _repository = repository;
             _sortAndFilter = sortAndFilter;
         }
 
-        public async Task<ResponseDTO<CategoryShortDTO>> CreateAsync(CategoryShortDTO data)
+        public async Task<ResponseDTO<CategoryDTO>> AddPropertyAsync(CategoryAddProperties data)
         {
-            CategoryShortDTO result = new CategoryShortDTO();
+            CategoryDTO result = new CategoryDTO();
             try
             {
-                result = _mapper.Map<CategoryShortDTO>(await _repository.CreateAsync(_mapper.Map<Category>(data)));
-                return new ResponseDTO<CategoryShortDTO>(result);
+                result = _mapper.Map<CategoryDTO>(await _repository.AddPropertyAsync(_mapper.Map<Category>(data)));
+                return new ResponseDTO<CategoryDTO>(result);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<CategoryShortDTO>(result) { Message = ex.Message };
+                return new ResponseDTO<CategoryDTO>(result) { Message = ex.Message };
             }
         }
 
-        public async Task<ResponseDTO<CategoryShortDTO>> DeleteAsync(int id)
+        public async Task<ResponseDTO<CategoryDTO>> CreateAsync(CategoryAdd data)
         {
-            CategoryShortDTO result = new CategoryShortDTO();
+            CategoryDTO result = new CategoryDTO();
             try
             {
-                result = _mapper.Map<CategoryShortDTO>(await _repository.DeleteAsync(id));
-                return new ResponseDTO<CategoryShortDTO>(result);
+                result = _mapper.Map<CategoryDTO>(await _repository.CreateAsync(_mapper.Map<Category>(data)));
+                return new ResponseDTO<CategoryDTO>(result);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<CategoryShortDTO>(result) { Message = ex.Message };
+                return new ResponseDTO<CategoryDTO>(result) { Message = ex.Message };
             }
         }
 
-        public async Task<ResponseDTO<CategoryShortDTO>> GetAsync(int id)
+        public async Task<ResponseDTO<CategoryDTO>> DeleteAsync(int id)
         {
-            CategoryShortDTO result = new CategoryShortDTO();
+            CategoryDTO result = new CategoryDTO();
             try
             {
-                result = _mapper.Map<CategoryShortDTO>(await _repository.GetAsync(id));
-                return new ResponseDTO<CategoryShortDTO>(result);
+                result = _mapper.Map<CategoryDTO>(await _repository.DeleteAsync(id));
+                return new ResponseDTO<CategoryDTO>(result);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<CategoryShortDTO>(result) { Message = ex.Message };
+                return new ResponseDTO<CategoryDTO>(result) { Message = ex.Message };
             }
         }
 
-        public async Task<ResponseDTO<IEnumerable<CategoryShortDTO>>> GetAsync()
+        public async Task<ResponseDTO<CategoryDTO>> DeletePropertyAsync(CategoryDeleteProperties data)
         {
-            IEnumerable<CategoryShortDTO> result = new List<CategoryShortDTO>();
+            CategoryDTO result = new CategoryDTO();
             try
             {
-                result = _mapper.Map<IEnumerable<CategoryShortDTO>>(await _repository.GetAsync());
-                return new ResponseDTO<IEnumerable<CategoryShortDTO>>(_sortAndFilter.SortBy(result, "name", "asc"));
+                result = _mapper.Map<CategoryDTO>(await _repository.DeletePropertyAsync(_mapper.Map<Category>(data)));
+                return new ResponseDTO<CategoryDTO>(result);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<IEnumerable<CategoryShortDTO>>(result) { Message = ex.Message };
+                return new ResponseDTO<CategoryDTO>(result) { Message = ex.Message };
             }
         }
 
-        public async Task<ResponseDTO<CategoryShortDTO>> UpdateAsync(CategoryShortDTO data)
+        public async Task<ResponseDTO<CategoryDTO>> GetAsync(int id)
         {
-            CategoryShortDTO result = new CategoryShortDTO();
+            CategoryDTO result = new CategoryDTO();
             try
             {
-                result = _mapper.Map<CategoryShortDTO>(await _repository.UpdateAsync(_mapper.Map<Category>(data)));
-                return new ResponseDTO<CategoryShortDTO>(result);
+                result = _mapper.Map<CategoryDTO>(await _repository.GetAsync(id));
+                return new ResponseDTO<CategoryDTO>(result);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<CategoryShortDTO>(result) { Message = ex.Message };
+                return new ResponseDTO<CategoryDTO>(result) { Message = ex.Message };
+            }
+        }
+
+        public async Task<ResponseDTO<IEnumerable<CategoryDTO>>> GetAsync()
+        {
+            IEnumerable<CategoryDTO> result = new List<CategoryDTO>();
+            try
+            {
+                result = _mapper.Map<IEnumerable<CategoryDTO>>(await _repository.GetAsync());
+                return new ResponseDTO<IEnumerable<CategoryDTO>>(_sortAndFilter.SortBy(result, "name", "asc"));
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<IEnumerable<CategoryDTO>>(result) { Message = ex.Message };
+            }
+        }
+
+        public async Task<ResponseDTO<CategoryDTO>> UpdateAsync(UpdateCategory data)
+        {
+            CategoryDTO result = new CategoryDTO();
+            try
+            {
+                result = _mapper.Map<CategoryDTO>(await _repository.UpdateAsync(_mapper.Map<Category>(data)));
+                return new ResponseDTO<CategoryDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<CategoryDTO>(result) { Message = ex.Message };
+            }
+        }
+
+        public async Task<ResponseDTO<CategoryDTO>> UpdatePropertyAsync(CategoryAddProperties data)
+        {
+            CategoryDTO result = new CategoryDTO();
+            try
+            {
+                result = _mapper.Map<CategoryDTO>(await _repository.UpdatePropertyAsync(_mapper.Map<Category>(data)));
+                return new ResponseDTO<CategoryDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<CategoryDTO>(result) { Message = ex.Message };
             }
         }
     }

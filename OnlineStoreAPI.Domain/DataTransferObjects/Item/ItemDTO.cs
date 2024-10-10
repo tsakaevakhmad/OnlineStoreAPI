@@ -1,5 +1,5 @@
-﻿using OnlineStoreAPI.Domain.DataTransferObjects.Company;
-using OnlineStoreAPI.Domain.DataTransferObjects.ItemCategory;
+﻿using OnlineStoreAPI.Domain.DataTransferObjects.Category;
+using OnlineStoreAPI.Domain.DataTransferObjects.Company;
 
 namespace OnlineStoreAPI.Domain.DataTransferObjects.Item
 {
@@ -10,7 +10,7 @@ namespace OnlineStoreAPI.Domain.DataTransferObjects.Item
         public decimal? Price { get; set; }
         public DateTime ReleaseDate { get; set; }
         public CompanyShortDTO? Company { get; set; }
-        public CategoryShort? Category { get; set; }
+        public CategoryShortDTO? Category { get; set; }
         public List<ItemPropertyList> ItemPropery { get; set; }
     }
 }
