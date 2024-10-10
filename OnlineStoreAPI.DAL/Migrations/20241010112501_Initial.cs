@@ -52,23 +52,22 @@ namespace OnlineStoreAPI.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Category",
+                name: "Categories",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    ParentId = table.Column<int>(type: "integer", nullable: false)
+                    ParentId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Category", x => x.Id);
+                    table.PrimaryKey("PK_Categories", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Category_Category_ParentId",
+                        name: "FK_Categories_Categories_ParentId",
                         column: x => x.ParentId,
-                        principalTable: "Category",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalTable: "Categories",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -85,7 +84,7 @@ namespace OnlineStoreAPI.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ItemPropertis",
+                name: "ItemProperties",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -95,7 +94,7 @@ namespace OnlineStoreAPI.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ItemPropertis", x => x.Id);
+                    table.PrimaryKey("PK_ItemProperties", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -220,9 +219,9 @@ namespace OnlineStoreAPI.DAL.Migrations
                 {
                     table.PrimaryKey("PK_Items", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Items_Category_CategoryId",
+                        name: "FK_Items_Categories_CategoryId",
                         column: x => x.CategoryId,
-                        principalTable: "Category",
+                        principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -237,22 +236,22 @@ namespace OnlineStoreAPI.DAL.Migrations
                 name: "CategoryItemProperty",
                 columns: table => new
                 {
-                    ItemCategoryId = table.Column<int>(type: "integer", nullable: false),
+                    CategoryId = table.Column<int>(type: "integer", nullable: false),
                     ItemPropertyId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CategoryItemProperty", x => new { x.ItemCategoryId, x.ItemPropertyId });
+                    table.PrimaryKey("PK_CategoryItemProperty", x => new { x.CategoryId, x.ItemPropertyId });
                     table.ForeignKey(
-                        name: "FK_CategoryItemProperty_Category_ItemCategoryId",
-                        column: x => x.ItemCategoryId,
-                        principalTable: "Category",
+                        name: "FK_CategoryItemProperty_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CategoryItemProperty_ItemPropertis_ItemPropertyId",
+                        name: "FK_CategoryItemProperty_ItemProperties_ItemPropertyId",
                         column: x => x.ItemPropertyId,
-                        principalTable: "ItemPropertis",
+                        principalTable: "ItemProperties",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -293,9 +292,9 @@ namespace OnlineStoreAPI.DAL.Migrations
                 {
                     table.PrimaryKey("PK_ItemProperyValues", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ItemProperyValues_ItemPropertis_ItemPropertyId1",
+                        name: "FK_ItemProperyValues_ItemProperties_ItemPropertyId1",
                         column: x => x.ItemPropertyId1,
-                        principalTable: "ItemPropertis",
+                        principalTable: "ItemProperties",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_ItemProperyValues_Items_ItemId1",
@@ -342,8 +341,8 @@ namespace OnlineStoreAPI.DAL.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Category_ParentId",
-                table: "Category",
+                name: "IX_Categories_ParentId",
+                table: "Categories",
                 column: "ParentId");
 
             migrationBuilder.CreateIndex(
@@ -411,13 +410,13 @@ namespace OnlineStoreAPI.DAL.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "ItemPropertis");
+                name: "ItemProperties");
 
             migrationBuilder.DropTable(
                 name: "Items");
 
             migrationBuilder.DropTable(
-                name: "Category");
+                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Companies");

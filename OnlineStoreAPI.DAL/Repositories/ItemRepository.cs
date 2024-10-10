@@ -48,7 +48,7 @@ namespace OnlineStoreAPI.DAL.Repositories
         {
             try
             {
-                await _db.ItemPropertis.AddAsync(data);
+                await _db.ItemProperties.AddAsync(data);
                 await _db.SaveChangesAsync();
                 return data;
             }

@@ -24,13 +24,13 @@ namespace OnlineStoreAPI.DAL.Migrations
 
             modelBuilder.Entity("CategoryItemProperty", b =>
                 {
-                    b.Property<int>("ItemCategoryId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("integer");
 
                     b.Property<long>("ItemPropertyId")
                         .HasColumnType("bigint");
 
-                    b.HasKey("ItemCategoryId", "ItemPropertyId");
+                    b.HasKey("CategoryId", "ItemPropertyId");
 
                     b.HasIndex("ItemPropertyId");
 
@@ -245,14 +245,14 @@ namespace OnlineStoreAPI.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("ParentId")
+                    b.Property<int?>("ParentId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Category");
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.Company", b =>
@@ -344,7 +344,7 @@ namespace OnlineStoreAPI.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ItemPropertis");
+                    b.ToTable("ItemProperties");
                 });
 
             modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.ItemProperyValue", b =>
@@ -384,7 +384,7 @@ namespace OnlineStoreAPI.DAL.Migrations
                 {
                     b.HasOne("OnlineStoreAPI.Domain.Entities.Category", null)
                         .WithMany()
-                        .HasForeignKey("ItemCategoryId")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -450,9 +450,7 @@ namespace OnlineStoreAPI.DAL.Migrations
                 {
                     b.HasOne("OnlineStoreAPI.Domain.Entities.Category", "Parent")
                         .WithMany("Childrens")
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ParentId");
 
                     b.Navigation("Parent");
                 });

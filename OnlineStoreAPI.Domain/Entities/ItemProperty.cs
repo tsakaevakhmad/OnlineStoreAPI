@@ -9,6 +9,6 @@
 
         public List<ItemProperyValue>? ItemProperyValue { get; set; }
 
-        public List<Category> ItemCategory { get; set; }
+        public List<Category> Category { get; set; }
     }
 }

@@ -32,7 +32,7 @@ namespace OnlineStoreAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ResponseDTO<CategoryDTO>>> GetItemCategory(int id)
+        public async Task<ActionResult<ResponseDTO<CategoryDTO>>> GetCategory(int id)
         {
             ResponseDTO<CategoryDTO> result = new ResponseDTO<CategoryDTO>(null);
             try
@@ -47,7 +47,7 @@ namespace OnlineStoreAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetItemCategory()
+        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetCategory()
         {
             ResponseDTO<IEnumerable<CategoryDTO>> result = new ResponseDTO<IEnumerable<CategoryDTO>>(null);
             try
@@ -62,7 +62,7 @@ namespace OnlineStoreAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ResponseDTO<CategoryDTO>>> DeleteItemCategory(int id)
+        public async Task<ActionResult<ResponseDTO<CategoryDTO>>> DeleteCategory(int id)
         {
             ResponseDTO<CategoryDTO> result = new ResponseDTO<CategoryDTO>(null);
             try
@@ -76,12 +76,9 @@ namespace OnlineStoreAPI.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<ResponseDTO<CategoryDTO>>> UpdateItemCategory(int id, UpdateCategory data)
+        [HttpPut]
+        public async Task<ActionResult<ResponseDTO<CategoryDTO>>> UpdateCategory(UpdateCategory data)
         {
-            if (id != data.Id)
-                return BadRequest("Incorrect id");
-
             ResponseDTO<CategoryDTO> result = new ResponseDTO<CategoryDTO>(null);
             try
             {
@@ -94,12 +91,9 @@ namespace OnlineStoreAPI.Controllers
             }
         }
 
-        [HttpPost("{itemCategoryId}")]
-        public async Task<ActionResult<ResponseDTO<CategoryDTO>>> AddPropertyToItemCategory(int itemCategoryId, CategoryAddProperties data)
+        [HttpPost]
+        public async Task<ActionResult<ResponseDTO<CategoryDTO>>> AddPropertyToCategory(CategoryAddProperties data)
         {
-            if (itemCategoryId != data.CategoryId)
-                return BadRequest("Incorrect id");
-
             ResponseDTO<CategoryDTO> result = new ResponseDTO<CategoryDTO>(null);
             try
             {
@@ -112,12 +106,9 @@ namespace OnlineStoreAPI.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<ResponseDTO<CategoryDTO>>> UpdatePropertyToItemCategory(int id, CategoryAddProperties data)
+        [HttpPut]
+        public async Task<ActionResult<ResponseDTO<CategoryDTO>>> UpdatePropertyToCategory(CategoryAddProperties data)
         {
-            if (id != data.CategoryId)
-                return BadRequest("Incorrect id");
-
             ResponseDTO<CategoryDTO> result = new ResponseDTO<CategoryDTO>(null);
             try
             {
@@ -130,12 +121,9 @@ namespace OnlineStoreAPI.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<ResponseDTO<CategoryDTO>>> DeletePropertyToItemCategory(int id, CategoryDeleteProperties data)
+        [HttpDelete]
+        public async Task<ActionResult<ResponseDTO<CategoryDTO>>> DeletePropertyToCategory(CategoryDeleteProperties data)
         {
-            if (id != data.CategoryId)
-                return BadRequest("Incorrect id");
-
             ResponseDTO<CategoryDTO> result = new ResponseDTO<CategoryDTO>(null);
             try
             {

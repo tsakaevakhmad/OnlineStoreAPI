@@ -48,7 +48,7 @@ namespace OnlineStoreAPI.DAL.Repositories
 
                 var result = _db.Categories
                     .Remove(requst);
-                _db.ItemPropertis.RemoveRange(requst.ItemProperty);
+                _db.ItemProperties.RemoveRange(requst.ItemProperty);
 
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
