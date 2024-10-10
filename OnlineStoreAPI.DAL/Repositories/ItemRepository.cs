@@ -84,7 +84,7 @@ namespace OnlineStoreAPI.DAL.Repositories
                 {
                     item = await _db.Items
                     .Include(x => x.ItemPriceHistories)
-                    .Include(x => x.ItemCategory)
+                    .Include(x => x.Category)
                     .Include(x => x.Company)
                     .Include(x => x.ItemProperyValue)
                     .ThenInclude(x => x.ItemProperty)
@@ -110,7 +110,7 @@ namespace OnlineStoreAPI.DAL.Repositories
                 {
                     items = await _db.Items
                         .Include(x => x.ItemPriceHistories)
-                        .Include(x => x.ItemCategory)
+                        .Include(x => x.Category)
                         .Include(x => x.Company)
                         .Include(x => x.ItemProperyValue)
                         .ThenInclude(x => x.ItemProperty)
@@ -177,7 +177,7 @@ namespace OnlineStoreAPI.DAL.Repositories
                 {
                     items = await _db.Items
                     .Include(x => x.ItemPriceHistories)
-                    .Include(x => x.ItemCategory)
+                    .Include(x => x.Category)
                     .Include(x => x.Company)
                     .Include(x => x.ItemProperyValue)
                     .ThenInclude(x => x.ItemProperty)
@@ -212,7 +212,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             var filter = PredicateBuilder.New<Item>(true);
 
             if (searchArguments.ItemCategoryId > 0)
-                filter = filter.And(item => item.ItemCategoryId == searchArguments.ItemCategoryId);
+                filter = filter.And(item => item.CategoryId == searchArguments.ItemCategoryId);
 
             if (!string.IsNullOrEmpty(searchArguments.ItemName))
                 filter = filter.And(item => item.Title.ToUpper().Contains(searchArguments.ItemName.ToUpper()));
@@ -254,7 +254,7 @@ namespace OnlineStoreAPI.DAL.Repositories
                     .Include(x => x.Item)
                     .ThenInclude(x => x.Company)
                     .Include(x => x.ItemProperty)
-                    .Where(x => x.Item.ItemCategoryId == itemCategoryId)
+                    .Where(x => x.Item.CategoryId == itemCategoryId)
                     .ToListAsync();
 
                 return new PropertyValuesDistinct

@@ -10,7 +10,7 @@ namespace OnlineStoreAPI.Domain.DataTransferObjects.Item
         public decimal? Price { get; set; }
         public DateTime ReleaseDate { get; set; }
         public CompanyShortDTO? Company { get; set; }
-        public ItemCategoryShort? ItemCategory { get; set; }
+        public CategoryShort? Category { get; set; }
         public List<ItemPropertyList> ItemPropery { get; set; }
     }
 }

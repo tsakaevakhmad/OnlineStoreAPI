@@ -2,13 +2,13 @@
 {
     public class ItemProperty
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         public string Name { get; set; }
         public string ValueType { get; set; } = "string";
 
         public List<ItemProperyValue>? ItemProperyValue { get; set; }
 
-        public List<ItemCategory> ItemCategory { get; set; }
+        public List<Category> ItemCategory { get; set; }
     }
 }

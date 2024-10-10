@@ -2,10 +2,10 @@
 
 namespace OnlineStoreAPI.DAL.Interfaces
 {
-    public interface IItemCategoryRepository : IRepository<ItemCategory>
+    public interface IItemCategoryRepository : IRepository<Category>
     {
-        public Task<ItemCategory> AddPropertyAsync(ItemCategory data);
-        public Task<ItemCategory> DeletePropertyAsync(ItemCategory data);
-        public Task<ItemCategory> UpdatePropertyAsync(ItemCategory data);
+        public Task<Category> AddPropertyAsync(Category data);
+        public Task<Category> DeletePropertyAsync(Category data);
+        public Task<Category> UpdatePropertyAsync(Category data);
     }
 }

@@ -6,7 +6,7 @@ using OnlineStoreAPI.Domain.Entities;
 
 namespace OnlineStoreAPI.DAL.Repositories
 {
-    public class ItemCategoryRepository : IItemCategoryRepository
+   /* public class ItemCategoryRepository : IItemCategoryRepository
     {
         private readonly AppDbContext _db;
         private readonly ILogger<ItemCategoryRepository> _logger;
@@ -208,5 +208,5 @@ namespace OnlineStoreAPI.DAL.Repositories
                 throw ex;
             }
         }
-    }
+    }*/
 }

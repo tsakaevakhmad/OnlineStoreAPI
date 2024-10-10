@@ -7,7 +7,7 @@ using OnlineStoreAPI.Domain.Entities;
 
 namespace OnlineStoreAPI.BLL.Services
 {
-    public class ItemCategoryServices : IItemCategoryServices
+    /*public class ItemCategoryServices : IItemCategoryServices
     {
         private readonly IMapper _mapper;
         private readonly IItemCategoryRepository _repository;
@@ -129,5 +129,5 @@ namespace OnlineStoreAPI.BLL.Services
                 return new ResponseDTO<ItemCategoryDTO>(result) { Message = ex.Message };
             }
         }
-    }
+    }*/
 }

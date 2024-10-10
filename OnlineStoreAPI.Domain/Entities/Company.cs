@@ -7,7 +7,7 @@
 
         public List<Item>? Items { get; set;}
 
-        public static implicit operator Company?(ItemCategory? v)
+        public static implicit operator Company?(Category? v)
         {
             throw new NotImplementedException();
         }
