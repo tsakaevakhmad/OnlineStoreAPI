@@ -12,11 +12,13 @@ namespace OnlineStoreAPI.BLL.AutoMapper
             CreateMap<Category, CategoryShortDTO>().ReverseMap();
             CreateMap<Category, CategoryDTO>()
                 .ForMember(x => x.ItemProperties, e => e.MapFrom(x => x.ItemProperty))
-                .ReverseMap();
+                .ReverseMap()
+                .ForMember(x => x.Id, e => e.Ignore());
 
-            CreateMap<CategoryAdd, Category>()
-               .ForMember(x => x.ItemProperty, e => e.MapFrom(x => x.ItemProperties))
-               .ReverseMap();
+            CreateMap<Category, CategoryAdd>()
+               .ForMember(x => x.ItemProperties, e => e.MapFrom(x => x.ItemProperty))
+               .ReverseMap()
+               .ForMember(x => x.Id, e => e.Ignore());
 
             CreateMap<ItemPropertyAdd, ItemProperty>()
                 .ReverseMap();
@@ -39,7 +41,7 @@ namespace OnlineStoreAPI.BLL.AutoMapper
                 .ForMember(x => x.PropertyIds, e => e.MapFrom(x => x.ItemProperty))
                 .ReverseMap();
 
-            CreateMap<ItemProperty, int>()
+            CreateMap<ItemProperty, string>()
                 .ReverseMap()
                 .ForMember(x => x.Id, e => e.MapFrom(x => x));
 

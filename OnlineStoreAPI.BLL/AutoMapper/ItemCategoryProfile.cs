@@ -8,15 +8,16 @@ namespace OnlineStoreAPI.BLL.AutoMapper
     {
         public ItemCategoryProfile() 
         {
-            CreateMap<ItemPropertyAdd, ItemProperty>()
-                .ReverseMap();
+            CreateMap<ItemProperty, ItemPropertyAdd>()
+                .ReverseMap()
+                .ForMember(x => x.Id, e => e.Ignore());
 
             CreateMap<ItemPropertyList, ItemProperty>()
                 .ForMember(x => x.Id, e => e.MapFrom(x => x.ItemPropertyId))
                 .ForMember(x => x.Name, e => e.MapFrom(x => x.Name))
                 .ReverseMap();
 
-            CreateMap<ItemProperty, long>()
+            CreateMap<ItemProperty, string>()
                 .ReverseMap()
                 .ForMember(x => x.Id, e => e.MapFrom(x => x));
         }

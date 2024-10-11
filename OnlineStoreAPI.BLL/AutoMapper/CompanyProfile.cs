@@ -8,8 +8,13 @@ namespace OnlineStoreAPI.BLL.AutoMapper
     {
         public CompanyProfile() 
         {
-            CreateMap<Company, CompanyDTO>().ReverseMap();
-            CreateMap<Company, CompanyShortDTO>().ReverseMap();
+            CreateMap<Company, CompanyDTO>()
+                .ReverseMap()
+                .ForMember(x => x.Id, e => e.Ignore());
+
+            CreateMap<Company, CompanyShortDTO>()
+                .ReverseMap()
+                .ForMember(x => x.Id, e => e.Ignore()); ;
         }
     }
 }

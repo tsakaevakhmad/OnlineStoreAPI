@@ -73,7 +73,7 @@ namespace OnlineStoreAPI.DAL.Repositories
                 category = await _cacheServices.OnGetAsync<Category>(id.ToString());
                 if(category == null)
                 {
-                    category = await _db.Categories.Include(x => x.ItemProperty)
+                    category = await _db.Categories.Include(x => x.Childrens).Include(x => x.ItemProperty)
                         .AsNoTracking()
                         .FirstAsync(x => x.Id == id);
                     await _cacheServices.AddAsync(id.ToString(), category, 1);

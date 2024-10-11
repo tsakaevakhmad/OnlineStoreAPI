@@ -2,7 +2,7 @@
 {
     public class ItemAddDTO
     {
-        public string Id { get; set; }
+        public string? Id { get; set; }
         public string Title { get; set; }
         public decimal? Price { get; set; }
         public DateTime ReleaseDate { get; set; }
@@ -13,7 +13,7 @@
 
     public class ItemPropertyValueAdd
     {
-        public string Id { get; set; }
+        public string? Id { get; set; }
         public string Value { get; set; }
         public string ItemPropertyId { get; set; }
     } 
