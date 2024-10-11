@@ -11,7 +11,7 @@ jobs:
     - uses: actions/checkout@v4
     
     - name: Log in to Docker Hub
-      run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+      run: --password-stdin docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" -p "${{ secrets.DOCKER_HUB_TOKEN }}"
 
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag ahmadck/osapi:dev
