@@ -14,7 +14,7 @@ jobs:
       run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag ahmadck/beaver:dev
+      run: docker build . --file Dockerfile --tag ahmadck/osapi:dev
 
     - name: Push the Docker image to Docker Hub
       run: docker push ahmadck/osapi:dev
