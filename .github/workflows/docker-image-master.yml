@@ -1,0 +1,20 @@
+name: Docker Image CI for Master
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Log in to Docker Hub
+      run: docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" -p "${{ secrets.DOCKER_HUB_TOKEN }}"
+
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag ahmadck/osapi:latest
+
+    - name: Push the Docker image to Docker Hub
+      run: docker push ahmadck/osapi:latest
