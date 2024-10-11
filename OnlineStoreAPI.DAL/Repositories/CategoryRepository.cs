@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OnlineStoreAPI.DAL.Contexts;
 using OnlineStoreAPI.DAL.Interfaces;
 using OnlineStoreAPI.Domain.Entities;
-using System;
+using System.Security.Cryptography.X509Certificates;
 
 namespace OnlineStoreAPI.DAL.Repositories
 {
@@ -13,7 +14,7 @@ namespace OnlineStoreAPI.DAL.Repositories
         private readonly ILogger<CategoryRepository> _logger;
         private readonly IRepositoryCacheServices _cacheServices;
 
-        public CategoryRepository(AppDbContext db, ILogger<CategoryRepository> logger, IRepositoryCacheServices cacheServices) 
+        public CategoryRepository(AppDbContext db, ILogger<CategoryRepository> logger, IRepositoryCacheServices cacheServices)
         {
             _db = db;
             _logger = logger;
@@ -71,16 +72,16 @@ namespace OnlineStoreAPI.DAL.Repositories
             {
                 Category category;
                 category = await _cacheServices.OnGetAsync<Category>(id.ToString());
-                if(category == null)
+                if (category == null)
                 {
                     category = await _db.Categories.Include(x => x.Childrens).Include(x => x.ItemProperty)
-                        .AsNoTracking()
                         .FirstAsync(x => x.Id == id);
+                    await LoadChildrenAsync(category);
                     await _cacheServices.AddAsync(id.ToString(), category, 1);
                 }
                 return category;
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error when try get by id with id: \"{id}\" in category repository");
                 throw ex;
@@ -95,15 +96,29 @@ namespace OnlineStoreAPI.DAL.Repositories
                 categories = await _cacheServices.OnGetAsync<List<Category>>(nameof(categories));
                 if (categories == null)
                 {
-                    categories = await _db.Categories.ToListAsync();
+                    categories = await _db.Categories.Where(x => x.ParentId == null).Include(x => x.Childrens).ToListAsync();
+                    foreach (var category in categories)
+                        await LoadChildrenAsync(category);
                     await _cacheServices.AddAsync(nameof(categories), categories, 1);
                 }
-                return categories;
+                return categories.OrderBy(x => x.Name);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error when try get all in category repository");
                 throw ex;
+            }
+        }
+
+        private async Task LoadChildrenAsync(Category category)
+        {
+            if (category != null && category.Childrens.Any())
+            {
+                foreach (var child in category.Childrens)
+                {
+                    await _db.Entry(child).Collection(l => l.Childrens).LoadAsync();
+                    await LoadChildrenAsync(child);
+                }
             }
         }
 
