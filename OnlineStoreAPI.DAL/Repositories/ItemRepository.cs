@@ -131,22 +131,30 @@ namespace OnlineStoreAPI.DAL.Repositories
             var transaction = await _db.Database.BeginTransactionAsync();
             try
             {
-                var item = _db.Entry<Item>(data);
-                item.State = EntityState.Modified;
+                var item = await _db.Items
+                    .Include(x => x.ItemProperyValue)
+                    .FirstOrDefaultAsync(x => x.Id == data.Id);
+                var categoryValues = await _db.Categories.AsNoTracking().Include(x => x.ItemProperty).FirstOrDefaultAsync(x => x.Id == item.CategoryId);
 
-                foreach(var itemProperyValues in data.ItemProperyValue)
+                foreach (var itemProperyValues in data.ItemProperyValue)
                 {
-                    var values = _db.Entry<ItemProperyValue>(itemProperyValues);
-                    values.State = EntityState.Modified;
+                    if(!categoryValues.ItemProperty.Any(x => x.Id == itemProperyValues.ItemPropertyId))
+                        continue;
+
+                    var value = item.ItemProperyValue.FirstOrDefault(x => x.ItemPropertyId == itemProperyValues.ItemPropertyId);
+                    if (value == null)
+                        item.ItemProperyValue.Add(value);
+                    else
+                        value.Value = itemProperyValues.Value;
                 }
 
                 await UpdatePriceHistoryAsync(data);
 
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
-                await _cacheServices.OnUpdateAsync(data.Id.ToString(), "items", item.Entity, 15, x => x.Id == data.Id);
+                await _cacheServices.OnUpdateAsync(data.Id.ToString(), "items", item, 15, x => x.Id == data.Id);
                 await _cacheServices.DeleteAsync(data.Id.ToString());
-                return item.Entity;
+                return item;
             }
             catch (Exception ex)
             {
@@ -160,7 +168,7 @@ namespace OnlineStoreAPI.DAL.Repositories
         {
             try
             {
-                await _db.ItemPriceHistories.AddAsync(new ItemPriceHistory { Item = data, Price = (decimal)data.Price });
+                data.ItemPriceHistories = new List<ItemPriceHistory> { new ItemPriceHistory { Item = data, Price = (decimal)data.Price } };
             }
             catch (Exception ex)
             {

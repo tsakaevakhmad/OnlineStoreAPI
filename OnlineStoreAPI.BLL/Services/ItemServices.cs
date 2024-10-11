@@ -120,7 +120,7 @@ namespace OnlineStoreAPI.BLL.Services
             }
         }
 
-        public async Task<ResponseDTO<ItemDTO>> UpdateAsync(ItemAddDTO data)
+        public async Task<ResponseDTO<ItemDTO>> UpdateAsync(ItemUpdateDTO data)
         {
             ItemDTO result = new ItemDTO();
             try

@@ -13,6 +13,10 @@ namespace OnlineStoreAPI.BLL.AutoMapper
                 .ReverseMap()
                 .ForMember(x => x.Id, e => e.Ignore());
 
+            CreateMap<Item, ItemUpdateDTO>()
+                .ForMember(x => x.ItemProperyValues, x => x.MapFrom(x => x.ItemProperyValue))
+                .ReverseMap();
+
             CreateMap<Item, ItemDTO>()
                 .ForMember(x => x.ItemPropery, x=> x.MapFrom(x => x.ItemProperyValue))
                 .ReverseMap()
@@ -21,6 +25,9 @@ namespace OnlineStoreAPI.BLL.AutoMapper
             CreateMap<ItemProperyValue, ItemPropertyValueAdd>()
                 .ReverseMap()
                 .ForMember(x => x.Id, e => e.Ignore());
+
+            CreateMap<ItemProperyValue, ItemPropertyValueUpdate>()
+                .ReverseMap();
 
             CreateMap<Item, ItemShortDTO>()
                 .ReverseMap();
