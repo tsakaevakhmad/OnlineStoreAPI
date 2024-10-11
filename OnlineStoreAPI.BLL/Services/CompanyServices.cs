@@ -10,11 +10,11 @@ namespace OnlineStoreAPI.BLL.Services
 {
     public class CompanyServices : ICompanyServices
     {
-        private readonly IRepository<Company> _repository;
+        private readonly IRepository<Company, string> _repository;
         private readonly IMapper _mapper;
         private readonly ISortAndFilterManager _sortAndFilter;
 
-        public CompanyServices(IRepository<Company> repository, IMapper mapper, ISortAndFilterManager sortAndFilter) 
+        public CompanyServices(IRepository<Company, string> repository, IMapper mapper, ISortAndFilterManager sortAndFilter) 
         {
             _repository = repository;
             _mapper = mapper;
@@ -35,7 +35,7 @@ namespace OnlineStoreAPI.BLL.Services
             }
         }
 
-        public async Task<ResponseDTO<CompanyDTO>> DeleteAsync(int id)
+        public async Task<ResponseDTO<CompanyDTO>> DeleteAsync(string id)
         {
             CompanyDTO result = new CompanyDTO();
             try
@@ -49,7 +49,7 @@ namespace OnlineStoreAPI.BLL.Services
             }
         }
 
-        public async Task<ResponseDTO<CompanyDTO>> GetAsync(int id)
+        public async Task<ResponseDTO<CompanyDTO>> GetAsync(string id)
         {
             CompanyDTO result = new CompanyDTO();
             try

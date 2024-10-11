@@ -62,7 +62,7 @@ namespace OnlineStoreAPI.Controllers
         }
 
         [HttpGet("{itemId}")]
-        public async Task<ActionResult<ResponseDTO<IEnumerable<ItemPriceHistoryDTO>>>> GetItemPriceHistory(int itemId)
+        public async Task<ActionResult<ResponseDTO<IEnumerable<ItemPriceHistoryDTO>>>> GetItemPriceHistory(string itemId)
         {
             ResponseDTO<IEnumerable<ItemPriceHistoryDTO>> result = new ResponseDTO<IEnumerable<ItemPriceHistoryDTO>>(null);
             try
@@ -77,7 +77,7 @@ namespace OnlineStoreAPI.Controllers
         }
 
         [HttpGet("{itemCategoryId}")]
-        public async Task<ActionResult<ResponseDTO<IEnumerable<PropertyValuesDistinct>>>> GetDistinctValuesAsync(int itemCategoryId)
+        public async Task<ActionResult<ResponseDTO<IEnumerable<PropertyValuesDistinct>>>> GetDistinctValuesAsync(string itemCategoryId)
         {
             ResponseDTO<PropertyValuesDistinct> result = new ResponseDTO<PropertyValuesDistinct>(null);
             try
@@ -92,7 +92,7 @@ namespace OnlineStoreAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ResponseDTO<ItemDTO>>> GetItem(int id)
+        public async Task<ActionResult<ResponseDTO<ItemDTO>>> GetItem(string id)
         {
             ResponseDTO<ItemDTO> result = new ResponseDTO<ItemDTO>(null);
             try
@@ -106,12 +106,9 @@ namespace OnlineStoreAPI.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<ResponseDTO<ItemDTO>>> UpdateItem(int id, ItemAddDTO data)
+        [HttpPut]
+        public async Task<ActionResult<ResponseDTO<ItemDTO>>> UpdateItem(ItemAddDTO data)
         {
-            if (id != data.Id)
-                return BadRequest("Incorrect id");
-
             ResponseDTO<ItemDTO> result = new ResponseDTO<ItemDTO>(null);
             try
             {
@@ -125,7 +122,7 @@ namespace OnlineStoreAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ResponseDTO<ItemDTO>>> DeleteItem(int id)
+        public async Task<ActionResult<ResponseDTO<ItemDTO>>> DeleteItem(string id)
         {
             ResponseDTO<ItemDTO> result = new ResponseDTO<ItemDTO>(null);
             try

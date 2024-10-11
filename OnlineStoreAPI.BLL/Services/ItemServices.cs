@@ -50,7 +50,7 @@ namespace OnlineStoreAPI.BLL.Services
             }
         }
 
-        public async Task<ResponseDTO<ItemDTO>> DeleteAsync(int id)
+        public async Task<ResponseDTO<ItemDTO>> DeleteAsync(string id)
         {
             ItemDTO result = new ItemDTO();
             try
@@ -64,7 +64,7 @@ namespace OnlineStoreAPI.BLL.Services
             }
         }
 
-        public async Task<ResponseDTO<ItemDTO>> GetAsync(int id)
+        public async Task<ResponseDTO<ItemDTO>> GetAsync(string id)
         {
             ItemDTO result = new ItemDTO();
             try
@@ -92,7 +92,7 @@ namespace OnlineStoreAPI.BLL.Services
             }
         }
 
-        public async Task<ResponseDTO<IEnumerable<ItemPriceHistoryDTO>>> GetItemPriceHistoryAsync(int itemId)
+        public async Task<ResponseDTO<IEnumerable<ItemPriceHistoryDTO>>> GetItemPriceHistoryAsync(string itemId)
         {
             IEnumerable<ItemPriceHistoryDTO> result = new List<ItemPriceHistoryDTO>();
             try
@@ -134,7 +134,7 @@ namespace OnlineStoreAPI.BLL.Services
             }
         }
 
-        public async Task<ResponseDTO<PropertyValuesDistinct>> GetDistinctValuesAsync(int itemCategoryId)
+        public async Task<ResponseDTO<PropertyValuesDistinct>> GetDistinctValuesAsync(string itemCategoryId)
         {
             PropertyValuesDistinct result = new PropertyValuesDistinct();
             try

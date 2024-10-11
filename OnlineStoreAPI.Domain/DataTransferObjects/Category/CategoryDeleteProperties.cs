@@ -3,7 +3,7 @@
     public class CategoryDeleteProperties
   
   {
-        public int CategoryId { get; set; }
-        public List<int> PropertyIds { get; set; }
+        public string CategoryId { get; set; }
+        public List<string> PropertyIds { get; set; }
     }
 }

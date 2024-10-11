@@ -12,7 +12,7 @@ using OnlineStoreAPI.DAL.Contexts;
 namespace OnlineStoreAPI.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241010112501_Initial")]
+    [Migration("20241011042106_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -27,11 +27,11 @@ namespace OnlineStoreAPI.DAL.Migrations
 
             modelBuilder.Entity("CategoryItemProperty", b =>
                 {
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("integer");
+                    b.Property<string>("CategoryId")
+                        .HasColumnType("text");
 
-                    b.Property<long>("ItemPropertyId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("ItemPropertyId")
+                        .HasColumnType("text");
 
                     b.HasKey("CategoryId", "ItemPropertyId");
 
@@ -238,18 +238,15 @@ namespace OnlineStoreAPI.DAL.Migrations
 
             modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.Category", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("integer");
+                    b.Property<string>("ParentId")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -260,11 +257,8 @@ namespace OnlineStoreAPI.DAL.Migrations
 
             modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.Company", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -277,17 +271,16 @@ namespace OnlineStoreAPI.DAL.Migrations
 
             modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.Item", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    b.Property<string>("CategoryId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("integer");
+                    b.Property<string>("CompanyId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<decimal?>("Price")
                         .HasColumnType("numeric");
@@ -316,8 +309,9 @@ namespace OnlineStoreAPI.DAL.Migrations
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<long>("ItemId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("ItemId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
@@ -331,11 +325,8 @@ namespace OnlineStoreAPI.DAL.Migrations
 
             modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.ItemProperty", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -352,23 +343,16 @@ namespace OnlineStoreAPI.DAL.Migrations
 
             modelBuilder.Entity("OnlineStoreAPI.Domain.Entities.ItemProperyValue", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("ItemId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
-                    b.Property<int>("ItemId")
-                        .HasColumnType("integer");
-
-                    b.Property<long?>("ItemId1")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("ItemPropertyId")
-                        .HasColumnType("integer");
-
-                    b.Property<long?>("ItemPropertyId1")
-                        .HasColumnType("bigint");
+                    b.Property<string>("ItemPropertyId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Value")
                         .IsRequired()
@@ -376,9 +360,9 @@ namespace OnlineStoreAPI.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ItemId1");
+                    b.HasIndex("ItemId");
 
-                    b.HasIndex("ItemPropertyId1");
+                    b.HasIndex("ItemPropertyId");
 
                     b.ToTable("ItemProperyValues");
                 });
@@ -492,11 +476,15 @@ namespace OnlineStoreAPI.DAL.Migrations
                 {
                     b.HasOne("OnlineStoreAPI.Domain.Entities.Item", "Item")
                         .WithMany("ItemProperyValue")
-                        .HasForeignKey("ItemId1");
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("OnlineStoreAPI.Domain.Entities.ItemProperty", "ItemProperty")
                         .WithMany("ItemProperyValue")
-                        .HasForeignKey("ItemPropertyId1");
+                        .HasForeignKey("ItemPropertyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Item");
 

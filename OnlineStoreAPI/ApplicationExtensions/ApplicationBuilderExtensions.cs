@@ -18,7 +18,7 @@ namespace OnlineStoreAPI.ApplicationExtensions
         public static void Reposytories(this WebApplicationBuilder builder)
         {
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-            builder.Services.AddScoped<IRepository<Company>, CompanyRepository>();
+            builder.Services.AddScoped<IRepository<Company, string>, CompanyRepository>();
             builder.Services.AddScoped<IItemRepositories, ItemRepository>();
 
             //Cache service

@@ -2,7 +2,7 @@
 {
     public class ItemPropertySearchList
     {
-        public int ItemPropertyId { get; set; }
+        public string ItemPropertyId { get; set; }
         public string ValueFrom { get; set; }
         public string? ValueTo { get; set; }
     }

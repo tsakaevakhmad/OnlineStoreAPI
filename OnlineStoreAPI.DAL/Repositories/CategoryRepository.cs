@@ -36,7 +36,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             }
         }
 
-        public async Task<Category> DeleteAsync(int id)
+        public async Task<Category> DeleteAsync(string id)
         {
             var transaction = await _db.Database.BeginTransactionAsync();
             try
@@ -65,7 +65,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             }
         }
 
-        public async Task<Category> GetAsync(int id)
+        public async Task<Category> GetAsync(string id)
         {
             try
             {

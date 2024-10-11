@@ -32,7 +32,7 @@ namespace OnlineStoreAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ResponseDTO<CategoryDTO>>> GetCategory(int id)
+        public async Task<ActionResult<ResponseDTO<CategoryDTO>>> GetCategory(string id)
         {
             ResponseDTO<CategoryDTO> result = new ResponseDTO<CategoryDTO>(null);
             try
@@ -62,7 +62,7 @@ namespace OnlineStoreAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ResponseDTO<CategoryDTO>>> DeleteCategory(int id)
+        public async Task<ActionResult<ResponseDTO<CategoryDTO>>> DeleteCategory(string id)
         {
             ResponseDTO<CategoryDTO> result = new ResponseDTO<CategoryDTO>(null);
             try

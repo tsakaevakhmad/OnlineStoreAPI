@@ -6,7 +6,7 @@ using OnlineStoreAPI.Domain.Entities;
 
 namespace OnlineStoreAPI.DAL.Repositories
 {
-    public class CompanyRepository : IRepository<Company>
+    public class CompanyRepository : IRepository<Company, string>
     {
         private readonly AppDbContext _db;
         private readonly ILogger<CompanyRepository> _logger;
@@ -35,7 +35,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             }
         }
 
-        public async Task<Company> DeleteAsync(int id)
+        public async Task<Company> DeleteAsync(string id)
         {
             try
             {
@@ -51,7 +51,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             }
         }
 
-        public async Task<Company> GetAsync(int id)
+        public async Task<Company> GetAsync(string id)
         {
             try
             {

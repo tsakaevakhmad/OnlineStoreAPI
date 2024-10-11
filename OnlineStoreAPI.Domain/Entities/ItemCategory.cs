@@ -2,10 +2,10 @@
 {
     public class ItemCategory
     {
-        public int Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; }
 
-        public int CategoryId { get; set; }
+        public string CategoryId { get; set; }
         public Category? Category { get; set; }
 
         public List<Item>? Items { get; set; }

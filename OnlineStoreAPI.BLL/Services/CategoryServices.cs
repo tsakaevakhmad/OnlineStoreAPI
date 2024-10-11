@@ -49,7 +49,7 @@ namespace OnlineStoreAPI.BLL.Services
             }
         }
 
-        public async Task<ResponseDTO<CategoryDTO>> DeleteAsync(int id)
+        public async Task<ResponseDTO<CategoryDTO>> DeleteAsync(string id)
         {
             CategoryDTO result = new CategoryDTO();
             try
@@ -77,7 +77,7 @@ namespace OnlineStoreAPI.BLL.Services
             }
         }
 
-        public async Task<ResponseDTO<CategoryDTO>> GetAsync(int id)
+        public async Task<ResponseDTO<CategoryDTO>> GetAsync(string id)
         {
             CategoryDTO result = new CategoryDTO();
             try

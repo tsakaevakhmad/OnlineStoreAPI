@@ -2,8 +2,8 @@
 {
     public class ItemPropertyList
     {
-        public long ItemPropertyId { get; set; }
-        public long ItemPropertyValueId { get; set; }
+        public string ItemPropertyId { get; set; }
+        public string ItemPropertyValueId { get; set; }
         public string Name { get; set; }
         public string Value { get; set; }
     }

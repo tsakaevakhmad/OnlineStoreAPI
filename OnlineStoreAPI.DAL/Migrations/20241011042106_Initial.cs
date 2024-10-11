@@ -55,10 +55,9 @@ namespace OnlineStoreAPI.DAL.Migrations
                 name: "Categories",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    ParentId = table.Column<int>(type: "integer", nullable: true)
+                    ParentId = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -74,8 +73,7 @@ namespace OnlineStoreAPI.DAL.Migrations
                 name: "Companies",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
@@ -87,8 +85,7 @@ namespace OnlineStoreAPI.DAL.Migrations
                 name: "ItemProperties",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     ValueType = table.Column<string>(type: "text", nullable: false)
                 },
@@ -207,13 +204,12 @@ namespace OnlineStoreAPI.DAL.Migrations
                 name: "Items",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<string>(type: "text", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: false),
                     Price = table.Column<decimal>(type: "numeric", nullable: true),
                     ReleaseDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CompanyId = table.Column<int>(type: "integer", nullable: false),
-                    CategoryId = table.Column<int>(type: "integer", nullable: false)
+                    CompanyId = table.Column<string>(type: "text", nullable: false),
+                    CategoryId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -236,8 +232,8 @@ namespace OnlineStoreAPI.DAL.Migrations
                 name: "CategoryItemProperty",
                 columns: table => new
                 {
-                    CategoryId = table.Column<int>(type: "integer", nullable: false),
-                    ItemPropertyId = table.Column<long>(type: "bigint", nullable: false)
+                    CategoryId = table.Column<string>(type: "text", nullable: false),
+                    ItemPropertyId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -263,7 +259,7 @@ namespace OnlineStoreAPI.DAL.Migrations
                     Id = table.Column<string>(type: "text", nullable: false),
                     Price = table.Column<decimal>(type: "numeric", nullable: false),
                     DateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ItemId = table.Column<long>(type: "bigint", nullable: false)
+                    ItemId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -280,27 +276,26 @@ namespace OnlineStoreAPI.DAL.Migrations
                 name: "ItemProperyValues",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<string>(type: "text", nullable: false),
                     Value = table.Column<string>(type: "text", nullable: false),
-                    ItemId = table.Column<int>(type: "integer", nullable: false),
-                    ItemId1 = table.Column<long>(type: "bigint", nullable: true),
-                    ItemPropertyId = table.Column<int>(type: "integer", nullable: false),
-                    ItemPropertyId1 = table.Column<long>(type: "bigint", nullable: true)
+                    ItemId = table.Column<string>(type: "text", nullable: false),
+                    ItemPropertyId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ItemProperyValues", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ItemProperyValues_ItemProperties_ItemPropertyId1",
-                        column: x => x.ItemPropertyId1,
+                        name: "FK_ItemProperyValues_ItemProperties_ItemPropertyId",
+                        column: x => x.ItemPropertyId,
                         principalTable: "ItemProperties",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ItemProperyValues_Items_ItemId1",
-                        column: x => x.ItemId1,
+                        name: "FK_ItemProperyValues_Items_ItemId",
+                        column: x => x.ItemId,
                         principalTable: "Items",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -356,14 +351,14 @@ namespace OnlineStoreAPI.DAL.Migrations
                 column: "ItemId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ItemProperyValues_ItemId1",
+                name: "IX_ItemProperyValues_ItemId",
                 table: "ItemProperyValues",
-                column: "ItemId1");
+                column: "ItemId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ItemProperyValues_ItemPropertyId1",
+                name: "IX_ItemProperyValues_ItemPropertyId",
                 table: "ItemProperyValues",
-                column: "ItemPropertyId1");
+                column: "ItemPropertyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Items_CategoryId",

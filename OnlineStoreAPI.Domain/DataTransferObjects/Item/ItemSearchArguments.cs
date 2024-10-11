@@ -2,7 +2,7 @@
 {
     public class ItemSearchArguments
     {
-        public int? ItemCategoryId { get; set; }
+        public string? ItemCategoryId { get; set; }
         public Decimal? FromPrice { get; set; }
         public Decimal? ToPrice { get; set; }
         public string? ItemName { get; set; } = null;

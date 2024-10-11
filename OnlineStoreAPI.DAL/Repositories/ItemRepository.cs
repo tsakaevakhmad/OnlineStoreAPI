@@ -59,7 +59,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             }
         }
 
-        public async Task<Item> DeleteAsync(int id)
+        public async Task<Item> DeleteAsync(string id)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             }
         }
 
-        public async Task<Item> GetAsync(int id)
+        public async Task<Item> GetAsync(string id)
         {
             try
             {
@@ -194,7 +194,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             }
         }
 
-        public async Task<IEnumerable<ItemPriceHistory>> GetPriceHistoryAsync(int itemId)
+        public async Task<IEnumerable<ItemPriceHistory>> GetPriceHistoryAsync(string itemId)
         {
             try
             {
@@ -211,7 +211,7 @@ namespace OnlineStoreAPI.DAL.Repositories
         {
             var filter = PredicateBuilder.New<Item>(true);
 
-            if (searchArguments.ItemCategoryId > 0)
+            if (!string.IsNullOrEmpty(searchArguments.ItemCategoryId))
                 filter = filter.And(item => item.CategoryId == searchArguments.ItemCategoryId);
 
             if (!string.IsNullOrEmpty(searchArguments.ItemName))
@@ -245,7 +245,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             return filter;
         }
 
-        public async Task<PropertyValuesDistinct> GetPropertyValuesDistinct(int itemCategoryId)
+        public async Task<PropertyValuesDistinct> GetPropertyValuesDistinct(string itemCategoryId)
         {
             try
             {

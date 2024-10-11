@@ -2,19 +2,19 @@
 {
     public class ItemAddDTO
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Title { get; set; }
         public decimal? Price { get; set; }
         public DateTime ReleaseDate { get; set; }
-        public int CompanyId { get; set; }
-        public int ItemCategoryId { get; set; }
+        public string CompanyId { get; set; }
+        public string CategoryId { get; set; }
         public List<ItemPropertyValueAdd>? ItemProperyValues { get; set; }
     }
 
     public class ItemPropertyValueAdd
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Value { get; set; }
-        public int ItemPropertyId { get; set; }
+        public string ItemPropertyId { get; set; }
     } 
 }

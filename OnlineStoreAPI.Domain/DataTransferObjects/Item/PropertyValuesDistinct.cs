@@ -8,7 +8,7 @@
 
     public class PropertyValues
     {
-        public int PropertyId { get; set; }
+        public string PropertyId { get; set; }
         public string PropertyName { get; set; }
         public List<string> Values { get; set; }
     }

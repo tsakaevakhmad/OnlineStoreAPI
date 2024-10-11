@@ -2,9 +2,9 @@
 {
     public class Category
     {
-        public int Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; }
-        public int? ParentId { get; set; }
+        public string? ParentId { get; set; }
         public Category? Parent { get; set; }
 
         public List<Category> Childrens { get; set; }

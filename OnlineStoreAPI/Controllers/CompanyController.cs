@@ -32,7 +32,7 @@ namespace OnlineStoreAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ResponseDTO<CompanyDTO>>> GetCompany(int id)
+        public async Task<ActionResult<ResponseDTO<CompanyDTO>>> GetCompany(string id)
         {
             ResponseDTO<CompanyDTO> result = new ResponseDTO<CompanyDTO>(null);
             try
@@ -62,7 +62,7 @@ namespace OnlineStoreAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ResponseDTO<CompanyDTO>>> DeleteCompany(int id)
+        public async Task<ActionResult<ResponseDTO<CompanyDTO>>> DeleteCompany(string id)
         {
             ResponseDTO<CompanyDTO> result = new ResponseDTO<CompanyDTO>(null);
             try
@@ -76,12 +76,9 @@ namespace OnlineStoreAPI.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<ResponseDTO<CompanyDTO>>> UpdateCompany(int id, CompanyShortDTO data)
+        [HttpPut]
+        public async Task<ActionResult<ResponseDTO<CompanyDTO>>> UpdateCompany(CompanyShortDTO data)
         {
-            if (id != data.Id)
-                return BadRequest("Incorrect id");
-
             ResponseDTO<CompanyDTO> result = new ResponseDTO<CompanyDTO>(null);
             try
             {
