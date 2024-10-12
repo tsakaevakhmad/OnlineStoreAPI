@@ -30,6 +30,12 @@ namespace OnlineStoreAPI.DAL.Repositories
             {
                 var result = await _db.Items.AddAsync(data);
                 await UpdatePriceHistoryAsync(data);
+
+                var categoryValues = await _db.Categories.AsNoTracking().Include(x => x.ItemProperty).FirstOrDefaultAsync(x => x.Id == result.Entity.CategoryId);
+                foreach(var itemProperty in data.ItemProperyValue)
+                    if (!categoryValues.ItemProperty.Any(x => x.Id == itemProperty.ItemPropertyId))
+                        throw new Exception($"Category of this item has no item property: \"{itemProperty.ItemPropertyId}\"");
+
                 await _db.ItemProperyValues.AddRangeAsync(data.ItemProperyValue);
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
