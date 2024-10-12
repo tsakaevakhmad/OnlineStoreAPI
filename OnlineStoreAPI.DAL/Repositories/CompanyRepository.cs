@@ -90,6 +90,11 @@ namespace OnlineStoreAPI.DAL.Repositories
             }
         }
 
+        public Task<IEnumerable<Company>> GetAsync(int pageNumber = 1, int pageSize = 50)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<Company> UpdateAsync(Company data)
         {
             try

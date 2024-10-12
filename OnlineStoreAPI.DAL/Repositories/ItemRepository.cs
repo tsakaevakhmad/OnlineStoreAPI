@@ -5,7 +5,6 @@ using OnlineStoreAPI.DAL.Contexts;
 using OnlineStoreAPI.DAL.Interfaces;
 using OnlineStoreAPI.Domain.DataTransferObjects.Item;
 using OnlineStoreAPI.Domain.Entities;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 
 namespace OnlineStoreAPI.DAL.Repositories
@@ -107,7 +106,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             }
         }
 
-        public async Task<IEnumerable<Item>> GetAsync()
+        public async Task<IEnumerable<Item>> GetAsync(int pageNumber = 1, int pageSize = 50)
         {
             try
             {
@@ -120,7 +119,10 @@ namespace OnlineStoreAPI.DAL.Repositories
                         .Include(x => x.Company)
                         .Include(x => x.ItemProperyValue)
                         .ThenInclude(x => x.ItemProperty)
-                        .AsNoTracking().ToListAsync();
+                        .AsNoTracking()
+                        .Skip((pageNumber - 1) * pageSize)
+                        .Take(pageSize)
+                        .ToListAsync();
                     await _cacheServices.AddAsync("items", items, 15);
                 }
                 return items;
@@ -186,20 +188,21 @@ namespace OnlineStoreAPI.DAL.Repositories
         {
             try
             {
-                var items = await _cacheServices.OnGetAsync<IEnumerable<Item>>("items");
-                if (items == null)
-                {
-                    items = await _db.Items
+                var items = await _db.Items
                     .Include(x => x.ItemPriceHistories)
                     .Include(x => x.Category)
                     .Include(x => x.Company)
                     .Include(x => x.ItemProperyValue)
                     .ThenInclude(x => x.ItemProperty)
-                    .AsNoTracking().ToListAsync();
-                    await _cacheServices.AddAsync("items", items, 15);
-                }
-                return (items.Where(GetItemExpression(searchArguments)))
-                    .Where(GetItemPropertyExpression(searchArguments.Property)).ToList(); ; 
+                    .AsNoTracking()
+                    .Where(GetItemExpression(searchArguments))
+                    .Where(GetItemPropertyExpression(searchArguments.Property))
+                    .OrderBy(x => x.ReleaseDate)
+                    .Skip((searchArguments.PageNumber - 1) * searchArguments.PageSize)
+                        .Take(searchArguments.PageSize)
+                        .ToListAsync();
+
+                return items;
             }
             catch (Exception ex)
             {
@@ -289,6 +292,11 @@ namespace OnlineStoreAPI.DAL.Repositories
                 _logger.LogCritical(ex, $"Error when getting distinct values from Item Categoty id: {itemCategoryId}");
                 throw ex;
             }
+        }
+
+        public Task<IEnumerable<Item>> GetAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }
