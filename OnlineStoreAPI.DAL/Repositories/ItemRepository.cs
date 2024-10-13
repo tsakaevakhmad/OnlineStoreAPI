@@ -200,7 +200,7 @@ namespace OnlineStoreAPI.DAL.Repositories
                     .OrderBy(x => x.ReleaseDate)
                     .Skip((searchArguments.PageNumber - 1) * searchArguments.PageSize)
                         .Take(searchArguments.PageSize)
-                        .ToListAsync();
+                    .ToListAsync();
 
                 return items;
             }
@@ -247,20 +247,60 @@ namespace OnlineStoreAPI.DAL.Repositories
         {
             var filter = PredicateBuilder.New<Item>(true);
 
-            if (itemProperties != null && itemProperties.Count > 0)
+            if (itemProperties == null || itemProperties.Count == 0)
+                return filter;
+
+            foreach (var property in itemProperties)
             {
-                filter = filter
-                .And(item => item.ItemProperyValue
-                .Any(prop => itemProperties
-                .Any(x => (prop.ItemPropertyId == x.ItemPropertyId)
-                    && (prop.ItemProperty.ValueType == "int" ? Convert.ToInt32(prop.Value) >= Convert.ToInt32(x.ValueFrom) && Convert.ToInt32(prop.Value) <= Convert.ToInt32(x.ValueTo)
-                    : prop.ItemProperty.ValueType == "bool" ? Convert.ToBoolean(prop.Value) == Convert.ToBoolean(x.ValueFrom)
-                    : prop.ItemProperty.ValueType == "double" ? Convert.ToDouble(prop.Value) >= Convert.ToDouble(x.ValueFrom) && Convert.ToDouble(prop.Value) <= Convert.ToDouble(x.ValueTo)
-                    : prop.Value.Contains(x.ValueFrom)))));
+                if (int.TryParse(property.ValueFrom, out _))
+                {
+                    filter = filter.And(item => item.ItemProperyValue
+                        .Any(prop => prop.ItemPropertyId == property.ItemPropertyId
+                            && Convert.ToInt32(prop.Value) >= Convert.ToInt32(property.ValueFrom)
+                            && Convert.ToInt32(prop.Value) <= Convert.ToInt32(property.ValueTo)));
+                }
+                else if (bool.TryParse(property.ValueFrom, out _))
+                {
+                    filter = filter.And(item => item.ItemProperyValue
+                        .Any(prop => prop.ItemPropertyId == property.ItemPropertyId
+                            && Convert.ToBoolean(prop.Value) == Convert.ToBoolean(property.ValueFrom)));
+                }
+                else if (double.TryParse(property.ValueFrom, out _))
+                {
+                    filter = filter.And(item => item.ItemProperyValue
+                        .Any(prop => prop.ItemPropertyId == property.ItemPropertyId
+                            && Convert.ToDouble(prop.Value) >= Convert.ToDouble(property.ValueFrom)
+                            && Convert.ToDouble(prop.Value) <= Convert.ToDouble(property.ValueTo)));
+                }
+                else
+                {
+                    filter = filter.And(item => item.ItemProperyValue
+                        .Any(prop => prop.ItemPropertyId == property.ItemPropertyId
+                            && prop.Value.ToUpper().Contains(property.ValueFrom.ToUpper())));
+                }
             }
 
             return filter;
         }
+
+        /* private ExpressionStarter<Item> GetItemPropertyExpression(List<ItemPropertySearchList> itemProperties)
+         {
+             var filter = PredicateBuilder.New<Item>(true);
+
+             if (itemProperties != null && itemProperties.Count > 0)
+             {
+                 filter = filter
+                 .And(item => item.ItemProperyValue
+                 .Any(prop => itemProperties
+                 .Any(x => (prop.ItemPropertyId == x.ItemPropertyId)
+                     && (prop.ItemProperty.ValueType == "int" ? Convert.ToInt32(prop.Value) >= Convert.ToInt32(x.ValueFrom) && Convert.ToInt32(prop.Value) <= Convert.ToInt32(x.ValueTo)
+                     : prop.ItemProperty.ValueType == "bool" ? Convert.ToBoolean(prop.Value) == Convert.ToBoolean(x.ValueFrom)
+                     : prop.ItemProperty.ValueType == "double" ? Convert.ToDouble(prop.Value) >= Convert.ToDouble(x.ValueFrom) && Convert.ToDouble(prop.Value) <= Convert.ToDouble(x.ValueTo)
+                     : prop.Value.Contains(x.ValueFrom)))));
+             }
+
+             return filter;
+         }*/
 
         public async Task<PropertyValuesDistinct> GetPropertyValuesDistinct(string itemCategoryId)
         {
