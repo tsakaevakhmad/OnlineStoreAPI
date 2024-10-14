@@ -5,7 +5,6 @@ using OnlineStoreAPI.DAL.Contexts;
 using OnlineStoreAPI.DAL.Interfaces;
 using OnlineStoreAPI.Domain.DataTransferObjects.Item;
 using OnlineStoreAPI.Domain.Entities;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 
 namespace OnlineStoreAPI.DAL.Repositories
@@ -30,6 +29,12 @@ namespace OnlineStoreAPI.DAL.Repositories
             {
                 var result = await _db.Items.AddAsync(data);
                 await UpdatePriceHistoryAsync(data);
+
+                var categoryValues = await _db.Categories.AsNoTracking().Include(x => x.ItemProperty).FirstOrDefaultAsync(x => x.Id == result.Entity.CategoryId);
+                foreach(var itemProperty in data.ItemProperyValue)
+                    if (!categoryValues.ItemProperty.Any(x => x.Id == itemProperty.ItemPropertyId))
+                        throw new Exception($"Category of this item has no item property: \"{itemProperty.ItemPropertyId}\"");
+
                 await _db.ItemProperyValues.AddRangeAsync(data.ItemProperyValue);
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -101,7 +106,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             }
         }
 
-        public async Task<IEnumerable<Item>> GetAsync()
+        public async Task<IEnumerable<Item>> GetAsync(int pageNumber = 1, int pageSize = 50)
         {
             try
             {
@@ -114,7 +119,10 @@ namespace OnlineStoreAPI.DAL.Repositories
                         .Include(x => x.Company)
                         .Include(x => x.ItemProperyValue)
                         .ThenInclude(x => x.ItemProperty)
-                        .AsNoTracking().ToListAsync();
+                        .AsNoTracking()
+                        .Skip((pageNumber - 1) * pageSize)
+                        .Take(pageSize)
+                        .ToListAsync();
                     await _cacheServices.AddAsync("items", items, 15);
                 }
                 return items;
@@ -180,20 +188,21 @@ namespace OnlineStoreAPI.DAL.Repositories
         {
             try
             {
-                var items = await _cacheServices.OnGetAsync<IEnumerable<Item>>("items");
-                if (items == null)
-                {
-                    items = await _db.Items
+                var items = await _db.Items
                     .Include(x => x.ItemPriceHistories)
                     .Include(x => x.Category)
                     .Include(x => x.Company)
                     .Include(x => x.ItemProperyValue)
                     .ThenInclude(x => x.ItemProperty)
-                    .AsNoTracking().ToListAsync();
-                    await _cacheServices.AddAsync("items", items, 15);
-                }
-                return (items.Where(GetItemExpression(searchArguments)))
-                    .Where(GetItemPropertyExpression(searchArguments.Property)).ToList(); ; 
+                    .AsNoTracking()
+                    .Where(GetItemExpression(searchArguments))
+                    .Where(GetItemPropertyExpression(searchArguments.Property))
+                    .OrderBy(x => x.ReleaseDate)
+                    .Skip((searchArguments.PageNumber - 1) * searchArguments.PageSize)
+                        .Take(searchArguments.PageSize)
+                    .ToListAsync();
+
+                return items;
             }
             catch (Exception ex)
             {
@@ -238,20 +247,60 @@ namespace OnlineStoreAPI.DAL.Repositories
         {
             var filter = PredicateBuilder.New<Item>(true);
 
-            if (itemProperties != null && itemProperties.Count > 0)
+            if (itemProperties == null || itemProperties.Count == 0)
+                return filter;
+
+            foreach (var property in itemProperties)
             {
-                filter = filter
-                .And(item => item.ItemProperyValue
-                .Any(prop => itemProperties
-                .Any(x => (prop.ItemPropertyId == x.ItemPropertyId)
-                    && (prop.ItemProperty.ValueType == "int" ? Convert.ToInt32(prop.Value) >= Convert.ToInt32(x.ValueFrom) && Convert.ToInt32(prop.Value) <= Convert.ToInt32(x.ValueTo)
-                    : prop.ItemProperty.ValueType == "bool" ? Convert.ToBoolean(prop.Value) == Convert.ToBoolean(x.ValueFrom)
-                    : prop.ItemProperty.ValueType == "double" ? Convert.ToDouble(prop.Value) >= Convert.ToDouble(x.ValueFrom) && Convert.ToDouble(prop.Value) <= Convert.ToDouble(x.ValueTo)
-                    : prop.Value.Contains(x.ValueFrom)))));
+                if (int.TryParse(property.ValueFrom, out _))
+                {
+                    filter = filter.And(item => item.ItemProperyValue
+                        .Any(prop => prop.ItemPropertyId == property.ItemPropertyId
+                            && Convert.ToInt32(prop.Value) >= Convert.ToInt32(property.ValueFrom)
+                            && Convert.ToInt32(prop.Value) <= Convert.ToInt32(property.ValueTo)));
+                }
+                else if (bool.TryParse(property.ValueFrom, out _))
+                {
+                    filter = filter.And(item => item.ItemProperyValue
+                        .Any(prop => prop.ItemPropertyId == property.ItemPropertyId
+                            && Convert.ToBoolean(prop.Value) == Convert.ToBoolean(property.ValueFrom)));
+                }
+                else if (double.TryParse(property.ValueFrom, out _))
+                {
+                    filter = filter.And(item => item.ItemProperyValue
+                        .Any(prop => prop.ItemPropertyId == property.ItemPropertyId
+                            && Convert.ToDouble(prop.Value) >= Convert.ToDouble(property.ValueFrom)
+                            && Convert.ToDouble(prop.Value) <= Convert.ToDouble(property.ValueTo)));
+                }
+                else
+                {
+                    filter = filter.And(item => item.ItemProperyValue
+                        .Any(prop => prop.ItemPropertyId == property.ItemPropertyId
+                            && prop.Value.ToUpper().Contains(property.ValueFrom.ToUpper())));
+                }
             }
 
             return filter;
         }
+
+        /* private ExpressionStarter<Item> GetItemPropertyExpression(List<ItemPropertySearchList> itemProperties)
+         {
+             var filter = PredicateBuilder.New<Item>(true);
+
+             if (itemProperties != null && itemProperties.Count > 0)
+             {
+                 filter = filter
+                 .And(item => item.ItemProperyValue
+                 .Any(prop => itemProperties
+                 .Any(x => (prop.ItemPropertyId == x.ItemPropertyId)
+                     && (prop.ItemProperty.ValueType == "int" ? Convert.ToInt32(prop.Value) >= Convert.ToInt32(x.ValueFrom) && Convert.ToInt32(prop.Value) <= Convert.ToInt32(x.ValueTo)
+                     : prop.ItemProperty.ValueType == "bool" ? Convert.ToBoolean(prop.Value) == Convert.ToBoolean(x.ValueFrom)
+                     : prop.ItemProperty.ValueType == "double" ? Convert.ToDouble(prop.Value) >= Convert.ToDouble(x.ValueFrom) && Convert.ToDouble(prop.Value) <= Convert.ToDouble(x.ValueTo)
+                     : prop.Value.Contains(x.ValueFrom)))));
+             }
+
+             return filter;
+         }*/
 
         public async Task<PropertyValuesDistinct> GetPropertyValuesDistinct(string itemCategoryId)
         {
@@ -283,6 +332,11 @@ namespace OnlineStoreAPI.DAL.Repositories
                 _logger.LogCritical(ex, $"Error when getting distinct values from Item Categoty id: {itemCategoryId}");
                 throw ex;
             }
+        }
+
+        public Task<IEnumerable<Item>> GetAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

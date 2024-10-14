@@ -5,6 +5,7 @@ using OnlineStoreAPI.DAL.Interfaces;
 using OnlineStoreAPI.Domain.DataTransferObjects;
 using OnlineStoreAPI.Domain.DataTransferObjects.Item;
 using OnlineStoreAPI.Domain.Entities;
+using System.Drawing.Printing;
 using System.Reflection;
 
 namespace OnlineStoreAPI.BLL.Services
@@ -78,13 +79,13 @@ namespace OnlineStoreAPI.BLL.Services
             }
         }
 
-        public async Task<ResponseDTO<IEnumerable<ItemShortDTO>>> GetAsync(string sortBy = null, string orderType = "DESC")
+        public async Task<ResponseDTO<IEnumerable<ItemShortDTO>>> GetAsync(int pageNumber = 1, int pageSize = 50)
         {
             IEnumerable<ItemShortDTO> result = new List<ItemShortDTO>();
             try
             {
-                result = _mapper.Map<IEnumerable<ItemShortDTO>>(await _repository.GetAsync());             
-                return new ResponseDTO<IEnumerable<ItemShortDTO>>(_sortAndFilter.SortBy(result, sortBy, orderType));
+                result = _mapper.Map<IEnumerable<ItemShortDTO>>(await _repository.GetAsync(pageNumber, pageSize));             
+                return new ResponseDTO<IEnumerable<ItemShortDTO>>(result);
             }
             catch (Exception ex)
             {
@@ -106,13 +107,13 @@ namespace OnlineStoreAPI.BLL.Services
             }
         }
 
-        public async Task<ResponseDTO<IEnumerable<ItemShortDTO>>> GetItemSearchArgumentsAsync(ItemSearchArguments searchArguments, string sortBy = null, string orderType = "DESC")
+        public async Task<ResponseDTO<IEnumerable<ItemShortDTO>>> GetItemSearchArgumentsAsync(ItemSearchArguments searchArguments)
         {
             IEnumerable<ItemShortDTO> result = new List<ItemShortDTO>();
             try
             {
                 result = _mapper.Map<IEnumerable<ItemShortDTO>>(await _repository.GetSearchArgumentsAsync(searchArguments));
-                return new ResponseDTO<IEnumerable<ItemShortDTO>>(_sortAndFilter.SortBy(result, sortBy, orderType));
+                return new ResponseDTO<IEnumerable<ItemShortDTO>>(result);
             }
             catch (Exception ex)
             {

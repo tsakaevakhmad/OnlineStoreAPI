@@ -224,5 +224,10 @@ namespace OnlineStoreAPI.DAL.Repositories
                 throw ex;
             }
         }
+
+        public Task<IEnumerable<Category>> GetAsync(int pageNumber = 1, int pageSize = 50)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
