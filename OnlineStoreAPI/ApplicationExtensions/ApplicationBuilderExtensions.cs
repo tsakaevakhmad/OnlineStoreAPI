@@ -5,9 +5,11 @@ using OnlineStoreAPI.BLL.Interfaces.Utilities;
 using OnlineStoreAPI.BLL.Services;
 using OnlineStoreAPI.BLL.Utilities;
 using OnlineStoreAPI.DAL.Contexts;
+using OnlineStoreAPI.DAL.FileStorages;
 using OnlineStoreAPI.DAL.Interfaces;
 using OnlineStoreAPI.DAL.Repositories;
 using OnlineStoreAPI.DAL.RepositoryServices;
+using OnlineStoreAPI.Domain.Configurations;
 using OnlineStoreAPI.Domain.Entities;
 using System.Data.Entity;
 
@@ -15,6 +17,11 @@ namespace OnlineStoreAPI.ApplicationExtensions
 {
     public static class ApplicationBuilderExtensions
     {
+        public static void Configurations(this WebApplicationBuilder builder)
+        {
+            builder.Services.Configure<MinioOptions>(builder.Configuration.GetSection("Minio"));
+        }
+
         public static void Reposytories(this WebApplicationBuilder builder)
         {
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -30,7 +37,8 @@ namespace OnlineStoreAPI.ApplicationExtensions
             builder.Services.AddTransient<ICategoryServices, CategoryServices>();
             builder.Services.AddTransient<ICompanyServices, CompanyServices>();
             builder.Services.AddTransient<IItemServices, ItemServices>();
-            
+            builder.Services.AddTransient<IFileStorage, MInioServices>();
+
             //Utilities
             builder.Services.AddScoped<ISortAndFilterManager, SortAndFilterManager>();
         }
