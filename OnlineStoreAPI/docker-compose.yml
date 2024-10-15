@@ -12,6 +12,10 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - DB=Server=OSADB;Port=5432;Database=OSADB;User Id=OSAUSER;Password=postgres;
       - FRONTHOST=http://localhost:3000
+    depends_on:
+      - database
+      - redis
+    restart: on-failure
     networks:
       - osa_network
 
@@ -32,3 +36,19 @@ services:
       - "6379:6379"
     networks:
       - osa_network
+
+  minio:
+    image: quay.io/minio/minio:latest
+    container_name: osafilestorage
+    ports:
+      - "9000:9000"
+      - "9090:9090"
+    environment:
+      - MINIO_ROOT_USER=ROOTUSER
+      - MINIO_ROOT_PASSWORD=CHANGEME123
+    entrypoint: ["minio", "server", "/data", "--console-address", ":9090"]
+    networks:
+      - osa_network
+    volumes:
+      - C:\minio\data:/data
+        
