@@ -7,6 +7,7 @@ namespace OnlineStoreAPI.Domain.DataTransferObjects.Category
         public string? Id { get; set; }
         public string Name { get; set; }
         public string? ParentId { get; set; }
+        public string? Icon { get; set; }
         public List<CategoryAdd>? Childrens { get; set; }
         public List<ItemPropertyAdd>? ItemProperties { get; set; }
     }

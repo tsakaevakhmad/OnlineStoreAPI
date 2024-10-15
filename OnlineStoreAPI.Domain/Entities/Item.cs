@@ -13,6 +13,7 @@
         public string CategoryId { get; set; }
         public Category? Category { get; set; }
 
+        public List<ItemPhoto> ItemPhotos { get; set; }
         public List<ItemProperyValue> ItemProperyValue { get; set; }
         public List<ItemPriceHistory>? ItemPriceHistories { get; set; }
     }

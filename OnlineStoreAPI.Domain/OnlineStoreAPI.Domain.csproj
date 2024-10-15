@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DataTransferObjects\ItemCategory\" />
     <Folder Include="Enums\" />
   </ItemGroup>
 

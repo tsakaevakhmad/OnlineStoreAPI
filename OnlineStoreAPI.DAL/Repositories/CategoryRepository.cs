@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OnlineStoreAPI.DAL.Contexts;
 using OnlineStoreAPI.DAL.Interfaces;
+using OnlineStoreAPI.Domain.Constants;
 using OnlineStoreAPI.Domain.Entities;
 using System.Security.Cryptography.X509Certificates;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace OnlineStoreAPI.DAL.Repositories
 {
@@ -13,18 +15,21 @@ namespace OnlineStoreAPI.DAL.Repositories
         private readonly AppDbContext _db;
         private readonly ILogger<CategoryRepository> _logger;
         private readonly IRepositoryCacheServices _cacheServices;
+        private readonly IFileStorage _fileStorage;
 
-        public CategoryRepository(AppDbContext db, ILogger<CategoryRepository> logger, IRepositoryCacheServices cacheServices)
+        public CategoryRepository(AppDbContext db, ILogger<CategoryRepository> logger, IRepositoryCacheServices cacheServices, IFileStorage fileStorage)
         {
             _db = db;
             _logger = logger;
             _cacheServices = cacheServices;
+            _fileStorage = fileStorage;
         }
 
         public async Task<Category> CreateAsync(Category data)
         {
             try
             {
+                await AddFileAsync(data);
                 data = (await _db.Categories.AddAsync(data)).Entity;
                 await _db.SaveChangesAsync();
                 await _cacheServices.OnCreateAsync("categories", data, 1);
@@ -53,6 +58,7 @@ namespace OnlineStoreAPI.DAL.Repositories
 
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
+                await _fileStorage.DeleteAsync(result.Entity.Icon);
 
                 await _cacheServices.OnDeleteAsync<Category>(id.ToString(), "categories", 1, x => x.Id == id);
                 await _cacheServices.DeleteAsync("items");
@@ -74,10 +80,13 @@ namespace OnlineStoreAPI.DAL.Repositories
                 category = await _cacheServices.OnGetAsync<Category>(id.ToString());
                 if (category == null)
                 {
-                    category = await _db.Categories.Include(x => x.Childrens).Include(x => x.ItemProperty)
+                    category = await _db.Categories
+                        .Include(x => x.Childrens)
+                        .Include(x => x.ItemProperty)
                         .FirstAsync(x => x.Id == id);
                     await LoadChildrenAsync(category);
-                    await _cacheServices.AddAsync(id.ToString(), category, 1);
+                    await _cacheServices.AddAsync(id.ToString(), category, 1);                    
+                    await LoadChildrenIconAsync(category);
                 }
                 return category;
             }
@@ -98,7 +107,10 @@ namespace OnlineStoreAPI.DAL.Repositories
                 {
                     categories = await _db.Categories.Where(x => x.ParentId == null).Include(x => x.Childrens).ToListAsync();
                     foreach (var category in categories)
+                    {
                         await LoadChildrenAsync(category);
+                        await LoadChildrenIconAsync(category);
+                    }
                     await _cacheServices.AddAsync(nameof(categories), categories, 1);
                 }
                 return categories.OrderBy(x => x.Name);
@@ -110,29 +122,22 @@ namespace OnlineStoreAPI.DAL.Repositories
             }
         }
 
-        private async Task LoadChildrenAsync(Category category)
-        {
-            if (category != null && category.Childrens.Any())
-            {
-                foreach (var child in category.Childrens)
-                {
-                    await _db.Entry(child).Collection(l => l.Childrens).LoadAsync();
-                    await LoadChildrenAsync(child);
-                }
-            }
-        }
-
         public async Task<Category> UpdateAsync(Category data)
         {
             try
             {
-                var entity = _db.Entry<Category>(data);
-                entity.State = EntityState.Modified;
+                await AddFileAsync(data);
+                var entity = await _db.Categories.FirstOrDefaultAsync(x => x.Id == data.Id);
+
+                if (!string.IsNullOrEmpty(data.Icon))
+                    entity.Icon = data.Icon;
+                entity.ParentId = data.ParentId;
+                entity.Name = data.Name;    
                 await _db.SaveChangesAsync();
-                await _cacheServices.OnUpdateAsync<Category>(data.Id.ToString(), "categories", entity.Entity, 1, x => x.Id == data.Id);
+                await _cacheServices.OnUpdateAsync<Category>(data.Id.ToString(), "categories", entity, 1, x => x.Id == data.Id);
                 await _cacheServices.DeleteAsync(data.Id.ToString());
                 await _cacheServices.DeleteAsync("items");
-                return entity.Entity;
+                return entity;
             }
             catch (Exception ex)
             {
@@ -228,6 +233,45 @@ namespace OnlineStoreAPI.DAL.Repositories
         public Task<IEnumerable<Category>> GetAsync(int pageNumber = 1, int pageSize = 50)
         {
             throw new NotImplementedException();
+        }
+
+        private async Task AddFileAsync(Category category)
+        {
+            if (category == null)
+                return;
+
+            if (category.Icon != null)
+                category.Icon = await _fileStorage.AddAsync(category.Icon, category.Name + $"_{Guid.NewGuid()}.png", string.Format(FileStoragePaths.CategoryPath, category.Name));
+            
+            if (category.Childrens.Any())
+                foreach (var child in category.Childrens)
+                    await AddFileAsync(child);
+        }
+
+        private async Task LoadChildrenAsync(Category category)
+        {
+            if (category != null && category.Childrens.Any())
+            {
+                foreach (var child in category.Childrens)
+                {
+                    await _db.Entry(child).Collection(l => l.Childrens).LoadAsync();
+                    await LoadChildrenAsync(child);
+                }
+            }
+        }
+
+        private async Task LoadChildrenIconAsync(Category category)
+        {
+
+            if (category == null)
+                return;
+
+            if (category.Icon != null)
+                category.Icon = await _fileStorage.GetUrlAsync(category.Icon);
+
+            if (category.Childrens.Any())
+                foreach (var child in category.Childrens)
+                    await LoadChildrenIconAsync(child);
         }
     }
 }

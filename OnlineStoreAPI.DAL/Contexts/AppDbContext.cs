@@ -12,7 +12,7 @@ namespace OnlineStoreAPI.DAL.Contexts
         }
 
         public DbSet<Item> Items { get; set; }
-        //public DbSet<ItemCategory> ItemCategories { get; set; }
+        public DbSet<ItemPhoto> ItemPhotos { get; set; }
         public DbSet<ItemPriceHistory> ItemPriceHistories { get; set; }
         public DbSet<ItemProperty> ItemProperties { get; set; }
         public DbSet<ItemProperyValue> ItemProperyValues { get; set; }

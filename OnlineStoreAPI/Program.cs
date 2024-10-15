@@ -6,6 +6,7 @@ builder.MainCofigurations();
 builder.Reposytories();
 builder.Services();
 builder.AutoMapperProfiles();
+builder.Configurations();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
