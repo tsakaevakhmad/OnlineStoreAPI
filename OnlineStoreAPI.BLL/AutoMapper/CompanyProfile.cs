@@ -14,7 +14,10 @@ namespace OnlineStoreAPI.BLL.AutoMapper
 
             CreateMap<Company, CompanyShortDTO>()
                 .ReverseMap()
-                .ForMember(x => x.Id, e => e.Ignore()); ;
+                .ForMember(x => x.Id, e => e.Ignore());
+            
+            CreateMap<Company, CompanyUpdateDTO>()
+                .ReverseMap();
         }
     }
 }

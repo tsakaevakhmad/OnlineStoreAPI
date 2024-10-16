@@ -77,7 +77,7 @@ namespace OnlineStoreAPI.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<ResponseDTO<CompanyDTO>>> UpdateCompany(CompanyShortDTO data)
+        public async Task<ActionResult<ResponseDTO<CompanyDTO>>> UpdateCompany(CompanyUpdateDTO data)
         {
             ResponseDTO<CompanyDTO> result = new ResponseDTO<CompanyDTO>(null);
             try

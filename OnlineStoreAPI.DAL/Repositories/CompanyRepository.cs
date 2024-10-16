@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using OnlineStoreAPI.DAL.Contexts;
 using OnlineStoreAPI.DAL.Interfaces;
+using OnlineStoreAPI.Domain.Constants;
 using OnlineStoreAPI.Domain.Entities;
 
 namespace OnlineStoreAPI.DAL.Repositories
@@ -11,12 +12,14 @@ namespace OnlineStoreAPI.DAL.Repositories
         private readonly AppDbContext _db;
         private readonly ILogger<CompanyRepository> _logger;
         private readonly IRepositoryCacheServices _cacheServices;
+        private readonly IFileStorage _fileStorage;
 
-        public CompanyRepository(AppDbContext db, ILogger<CompanyRepository> logger, IRepositoryCacheServices cacheServices)
+        public CompanyRepository(AppDbContext db, ILogger<CompanyRepository> logger, IRepositoryCacheServices cacheServices, IFileStorage fileStorage)
         {
             _db = db;
             _logger = logger;
             _cacheServices = cacheServices;
+            _fileStorage = fileStorage;
         }
 
         public async Task<Company> CreateAsync(Company data)
@@ -24,6 +27,11 @@ namespace OnlineStoreAPI.DAL.Repositories
             try
             {
                 var result = await _db.Companies.AddAsync(data);
+                
+                if(!string.IsNullOrEmpty(data.Logo))
+                    data.Logo = await _fileStorage.AddAsync(data.Logo, 
+                        data.Name + $"{Guid.NewGuid()}.png", string.Format(FileStoragePaths.CompanyPath, result.Entity.Id));
+
                 await _db.SaveChangesAsync();
                 await _cacheServices.OnCreateAsync<Company>("companies", result.Entity, 1);
                 return result.Entity;
@@ -40,6 +48,7 @@ namespace OnlineStoreAPI.DAL.Repositories
             try
             {
                 var result = _db.Companies.Remove(await _db.Companies.FindAsync(id));
+                await _fileStorage.DeleteAsync(result.Entity.Logo);
                 await _db.SaveChangesAsync();
                 await _cacheServices.OnDeleteAsync<Company>(id.ToString(), "companies", 1, x => x.Id == id);
                 return result.Entity;
@@ -59,6 +68,7 @@ namespace OnlineStoreAPI.DAL.Repositories
                 if (company == null)
                 {
                     company = await _db.Companies.FindAsync(id);
+                    company.Logo = await _fileStorage.GetUrlAsync(company.Logo);
                     await _cacheServices.AddAsync(id.ToString(), company, 1);
                 }
                 return company;
@@ -79,6 +89,8 @@ namespace OnlineStoreAPI.DAL.Repositories
                 if (companies == null)
                 {
                     companies = await _db.Companies.ToListAsync();
+                    var loadLogoTasks = companies.Select(async x => x.Logo = await _fileStorage.GetUrlAsync(x.Logo));
+                    await Task.WhenAll(loadLogoTasks);
                     await _cacheServices.AddAsync(nameof(companies), companies, 1);
                 }
                 return companies;
@@ -99,6 +111,10 @@ namespace OnlineStoreAPI.DAL.Repositories
         {
             try
             {
+                if (!string.IsNullOrEmpty(data.Logo))
+                    data.Logo = await _fileStorage.AddAsync(data.Logo,
+                        data.Name.ToLower() + $"{Guid.NewGuid()}.png", string.Format(FileStoragePaths.CompanyPath, data.Id));
+
                 var entity = _db.Entry<Company>(data);
                 entity.State = EntityState.Modified;
                 await _db.SaveChangesAsync();

@@ -77,7 +77,7 @@ namespace OnlineStoreAPI.BLL.Services
             }
         }
 
-        public async Task<ResponseDTO<CompanyDTO>> UpdateAsync(CompanyShortDTO data)
+        public async Task<ResponseDTO<CompanyDTO>> UpdateAsync(CompanyUpdateDTO data)
         {
             CompanyDTO result = new CompanyDTO();
             try

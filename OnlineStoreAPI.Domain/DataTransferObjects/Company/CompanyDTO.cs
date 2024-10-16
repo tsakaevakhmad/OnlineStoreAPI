@@ -6,6 +6,8 @@ namespace OnlineStoreAPI.Domain.DataTransferObjects.Company
     {
         public string? Id { get; set; }
         public string Name { get; set; }
+        public string? Logo { get; set; }
+
         public List<ItemShortDTO>? Items { get; set; }
     }
 }

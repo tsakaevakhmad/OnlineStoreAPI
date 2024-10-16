@@ -7,7 +7,7 @@ namespace OnlineStoreAPI.BLL.Interfaces
     {
         public Task<ResponseDTO<CompanyDTO>> GetAsync(string id);
         public Task<ResponseDTO<IEnumerable<CompanyShortDTO>>> GetAsync();
-        public Task<ResponseDTO<CompanyDTO>> UpdateAsync(CompanyShortDTO data);
+        public Task<ResponseDTO<CompanyDTO>> UpdateAsync(CompanyUpdateDTO data);
         public Task<ResponseDTO<CompanyDTO>> DeleteAsync(string id);
         public Task<ResponseDTO<CompanyShortDTO>> CreateAsync(CompanyShortDTO data);
     }
